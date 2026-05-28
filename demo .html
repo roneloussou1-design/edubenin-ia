@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EduBénin IA — Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+/* ── BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1643a3;--blue-mid:#2255c4;--sky:#deeafb;--navy:#0c1f4a;
+  --green:#1a8c5b;--green-lt:#e0f5ec;
+  --amber:#d97706;--amber-lt:#fef3c7;
+  --red:#c0392b;--red-lt:#fce8e8;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --bg:#f1f5f9;--bg2:#f8fafc;--white:#fff;
+  --radius:10px;--radius-lg:14px;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+input,select,textarea,button{font-family:inherit;font-size:14px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--white);color:var(--text);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:72px}
+button{cursor:pointer;border:none;border-radius:var(--radius);transition:all .15s}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;background:var(--white);border:1px solid var(--border2);color:var(--text);font-weight:500}
+.btn:hover{background:var(--bg)}
+.btn-primary{background:var(--blue);color:var(--white);border:none;font-weight:600}
+.btn-primary:hover{background:var(--blue-mid)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff;border:none}
+.btn-danger:hover{background:#a93226}
+.btn-ghost{background:transparent;border:none;color:var(--blue);padding:4px 6px;font-weight:500}
+.btn-ghost:hover{background:var(--sky);border-radius:6px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-ok{background:var(--green-lt);color:var(--green)}
+.badge-warn{background:var(--amber-lt);color:var(--amber)}
+.badge-danger{background:var(--red-lt);color:var(--red)}
+.badge-blue{background:var(--sky);color:var(--blue)}
+.badge-gray{background:#f1f5f9;color:var(--text2)}
+.tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;background:var(--sky);color:var(--blue);margin:2px}
+
+/* ── LAYOUT ── */
+.app{min-height:100vh;display:flex;flex-direction:column}
+
+/* ── AUTH ── */
+.auth-bg{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(135deg,var(--navy) 0%,#1a3a8f 50%,var(--navy) 100%);
+  position:relative;overflow:hidden;
+}
+.auth-bg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 30% 50%,rgba(30,90,220,.18) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 40% at 80% 30%,rgba(26,140,91,.12) 0%,transparent 60%);
+}
+.auth-card{
+  background:var(--white);border-radius:20px;padding:36px 32px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.2);
+  position:relative;z-index:1;
+}
+.auth-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:8px}
+.auth-logo-icon{width:44px;height:44px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px}
+.auth-logo-text{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--navy)}
+.auth-title{font-size:17px;font-weight:600;color:var(--text);text-align:center;margin-bottom:4px}
+.auth-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:20px}
+.role-tabs{display:flex;gap:4px;background:var(--bg);padding:3px;border-radius:10px;margin-bottom:18px}
+.rtab{flex:1;padding:7px 4px;text-align:center;font-size:12px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--text2);border:none;background:transparent;transition:all .15s}
+.rtab.active{background:var(--white);color:var(--blue);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.auth-link{background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer;display:block;text-align:center;margin-top:12px;text-decoration:underline;text-underline-offset:2px}
+.auth-link:hover{color:var(--navy)}
+.err-msg{background:var(--red-lt);color:var(--red);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+.ok-msg{background:var(--green-lt);color:var(--green);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tlogo{font-family:'Fraunces',serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.tright{display:flex;align-items:center;gap:10px}
+.tuser{font-size:13px;opacity:.85;display:flex;align-items:center;gap:6px}
+.tbadge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600}
+.tbtn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;font-size:12px;border-radius:8px}
+.tbtn-logout:hover{background:rgba(255,255,255,.18)}
+
+/* ── NAV TABS ── */
+.nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0}
+.ntab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+.ntab:hover{color:var(--blue)}
+.ntab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+
+/* ── PAGE ── */
+.page-wrap{flex:1;overflow-y:auto;padding:20px;max-width:960px;margin:0 auto;width:100%}
+
+/* ── CARDS ── */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.metric{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;text-align:center;box-shadow:var(--shadow)}
+.metric-val{font-size:26px;font-weight:700;color:var(--blue);font-family:'Fraunces',serif}
+.metric-lab{font-size:11px;color:var(--text3);margin-top:3px;font-weight:500}
+
+/* ── ROW ── */
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue);flex-shrink:0}
+
+/* ── PROGRESS BAR ── */
+.bar-bg{background:var(--bg);border-radius:4px;height:7px;overflow:hidden;width:90px}
+.bar-fill{height:7px;border-radius:4px;transition:width .4s}
+
+/* ── AI BOX ── */
+.ai-box{background:linear-gradient(135deg,#eef4ff 0%,#e8f8f3 100%);border-left:3px solid var(--blue);border-radius:var(--radius);padding:13px 15px;font-size:13px;line-height:1.7;color:#0c2556;margin-bottom:12px}
+.ai-box.loading{background:var(--bg2);border-left-color:var(--border2);color:var(--text3);font-style:italic}
+
+/* ── CHOICE ── */
+.choice-opt{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--radius);border:1px solid var(--border2);margin-bottom:6px;cursor:pointer;font-size:13px;transition:all .15s}
+.choice-opt:hover{background:var(--bg);border-color:var(--blue-mid)}
+.choice-opt.correct{background:var(--green-lt);border-color:var(--green);color:var(--green);font-weight:500}
+.choice-opt.wrong{background:var(--red-lt);border-color:var(--red);color:var(--red)}
+
+/* ── CHAT ── */
+.chat-msg{padding:9px 13px;border-radius:var(--radius);font-size:13px;line-height:1.6;margin-bottom:8px;max-width:88%}
+.chat-user{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:3px}
+.chat-ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
+.chat-row{display:flex;gap:8px;margin-top:12px}
+.chat-row input{flex:1;border-radius:20px;padding:9px 14px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(12,31,74,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-box{background:var(--white);border-radius:18px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* ── SPINNER ── */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SECTION SELECT (promo filter) ── */
+.promo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pf-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--white);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.pf-btn:hover{border-color:var(--blue);color:var(--blue)}
+.pf-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── NIVEAUX GRID ── */
+.niv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:5px}
+.niv-btn{padding:6px 4px;font-size:11px;border:1px solid var(--border2);border-radius:8px;background:var(--white);cursor:pointer;color:var(--text2);text-align:center;transition:all .15s;font-family:inherit;font-weight:500}
+.niv-btn:hover{border-color:var(--blue);color:var(--blue)}
+.niv-btn.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── MATIÈRES CUSTOM ── */
+.mat-chip{display:inline-flex;align-items:center;gap:5px;background:var(--sky);color:var(--blue);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin:3px}
+.mat-chip .rm{cursor:pointer;color:var(--blue);opacity:.6;font-size:14px;line-height:1}
+.mat-chip .rm:hover{opacity:1}
+</style>
+</head>
+<body>
+<div class="app" id="root"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CONSTANTES & DB
+// ══════════════════════════════════════════════════════════
+const NIVEAUX = ["CP","CE1","CE2","CM1","CM2","6ème","5ème","4ème","3ème","2nde","1ère","Terminale"];
+const PRIMAIRE = ["CP","CE1","CE2","CM1","CM2"];
+const COLLEGE  = ["6ème","5ème","4ème","3ème"];
+const LYCEE    = ["2nde","1ère","Terminale"];
+
+// Matières par défaut selon le cycle
+const MATIERES_BASE = {
+  primaire: ["Expression écrite","Lecture","Education Sociale","Education Scientifique et Technologique","Mathématiques","Dessin"],
+  college:  ["Communication écrite","Lecture","Mathématiques","SVT","PCT","Anglais","Histoire-Géo"],
+  quatrieme:["Communication écrite","Lecture","Mathématiques","SVT","PCT","Anglais","Histoire-Géo","Allemand ou Espagnol"],
+  lycee:    ["Communication écrite","Lecture","Mathématiques","SVT","PCT","Anglais","Histoire-Géo","Philosophie"],
+};
+
+function getMatieresByNiveau(n){
+  if(PRIMAIRE.includes(n)) return [...MATIERES_BASE.primaire];
+  if(n==="4ème") return [...MATIERES_BASE.quatrieme];
+  if(COLLEGE.includes(n)) return [...MATIERES_BASE.college];
+  return [...MATIERES_BASE.lycee];
+}
+
+// DB en mémoire (persistance via window.storage)
+let DB = {
+  users:[
+    // Secrétaire prédéfinie
+    {id:"sec001",nom:"Mme Adjoua Kossou",role:"secretaire",mdp:"1234"},
+    // Prof prédéfini avec 2 classes
+    {id:"prof001",nom:"Prof. Martin Gbèdji",role:"prof",mdp:"1234",classes:["3ème","Terminale"]},
+    // Élèves pré-inscrits
+    {id:"e001",nom:"Aïcha Dossou",role:"eleve",classe:"3ème",mdp:"1234",
+     score:72,matieres:{"Communication écrite":72,"Lecture":78,"Mathématiques":62,"SVT":80,"PCT":65,"Anglais":70,"Histoire-Géo":71},
+     diffs:["Fractions","Équations 1er degré"],exercices:14,progression:8,inscritPar:"secretaire"},
+    {id:"e002",nom:"Kofi Agbodji",role:"eleve",classe:"3ème",mdp:"1234",
+     score:45,matieres:{"Communication écrite":38,"Lecture":42,"Mathématiques":40,"SVT":65,"PCT":50,"Anglais":45,"Histoire-Géo":55},
+     diffs:["Subjonctif","Accord participe passé","Dictée"],exercices:9,progression:-2,inscritPar:"secretaire"},
+    {id:"e003",nom:"Fatou Zinsou",role:"eleve",classe:"Terminale",mdp:"1234",
+     score:88,matieres:{"Communication écrite":85,"Lecture":90,"Mathématiques":92,"SVT":86,"PCT":84,"Anglais":88,"Histoire-Géo":82,"Philosophie":90},
+     diffs:["Probabilités"],exercices:22,progression:5,inscritPar:"secretaire"},
+    {id:"e004",nom:"Amara Hounsou",role:"eleve",classe:"CP",mdp:"1234",
+     score:68,matieres:{"Expression écrite":60,"Lecture":72,"Education Sociale":70,"Education Scientifique et Technologique":65,"Mathématiques":68,"Dessin":80},
+     diffs:["Lecture syllabique"],exercices:8,progression:5,inscritPar:"secretaire"},
+  ],
+  contenus:[
+    {id:"c1",titre:"Révision équations — exercices niveau 2",matiere:"Mathématiques",classe:"3ème",dest:"Élèves en difficulté",date:"22 mai",auteur:"Prof. Martin Gbèdji"},
+    {id:"c2",titre:"Dictée : La savane africaine",matiere:"Communication écrite",classe:"3ème",dest:"Toute la classe",date:"20 mai",auteur:"Prof. Martin Gbèdji"},
+  ],
+  // Matières personnalisées ajoutées par l'école, par niveau
+  matieresCustom:{},
+  exercices:[
+    {id:1,classe:"3ème",matiere:"Mathématiques",titre:"Équations du 1er degré",question:"Si 3x + 6 = 15, quelle est la valeur de x ?",choices:["x = 2","x = 3","x = 7","x = 5"],correct:1,expl:"On soustrait 6 : 3x = 9, puis on divise par 3 : x = 3."},
+    {id:2,classe:"3ème",matiere:"Communication écrite",titre:"Accord du participe passé",question:"Laquelle de ces phrases est correcte ?",choices:["Les fleurs que j'ai cueillie sont belles.","Les fleurs que j'ai cueillies sont belles.","Les fleurs que j'ai cueilli sont belles.","Les fleurs que j'ai cueillis sont belles."],correct:1,expl:"Le participe passé s'accorde avec le COD placé avant."},
+    {id:3,classe:"CP",matiere:"Lecture",titre:"Sons et syllabes",question:"Quel son entend-on dans le mot 'chapeau' ?",choices:["[p]","[ch]","[a]","[o]"],correct:1,expl:"'Ch' fait le son [ch] comme dans chat, chien, chapeau."},
+    {id:4,classe:"Terminale",matiere:"Philosophie",titre:"Kant et la morale",question:"L'impératif catégorique de Kant signifie :",choices:["Agir par intérêt","Agir selon une règle universalisable","Suivre ses émotions","Obéir à l'autorité"],correct:1,expl:"L'impératif catégorique demande d'agir selon des principes que l'on voudrait universels."},
+  ]
+};
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let S = {
+  screen:"login",       // login | register | app
+  regRole:"eleve",
+  loginRole:"eleve",
+  user:null,
+  tab:0,
+  exIdx:0,
+  chosenAns:null,
+  chatMsgs:[],
+  chatLoading:false,
+  aiSummary:null,
+  aiSummaryLoading:false,
+  aiExercice:null,
+  modal:null,           // null | "add-eleve" | "add-matiere" | "eleve-detail"
+  modalData:{},
+  partageSuccess:false,
+  selNiveauxReg:[],     // pour prof registration : classes choisies
+  selNiveauReg:null,    // pour eleve registration
+  promoFilter:null,     // filtre promo pour prof/secretaire
+};
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+function ini(n){return (n||"").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()}
+function scoreColor(s){return s>=70?"var(--green)":s>=50?"var(--amber)":"var(--red)"}
+function scoreBadge(s){
+  if(s>=70) return `<span class="badge badge-ok">Bon niveau</span>`;
+  if(s>=50) return `<span class="badge badge-warn">Moyen</span>`;
+  return `<span class="badge badge-danger">En difficulté</span>`;
+}
+function newId(prefix){return prefix+(Date.now()%1000000)}
+function getCycle(n){
+  if(PRIMAIRE.includes(n)) return "primaire";
+  if(n==="4ème") return "quatrieme";
+  if(COLLEGE.includes(n)) return "college";
+  return "lycee";
+}
+function getMatieres(n){
+  const base = getMatieresByNiveau(n);
+  const custom = DB.matieresCustom[n]||[];
+  return [...base,...custom];
+}
+
+async function callIA(system, prompt){
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1000,
+        system,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data = await res.json();
+    return (data.content||[]).map(c=>c.text||"").join("");
+  } catch(e){
+    return null;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER ROOT
+// ══════════════════════════════════════════════════════════
+function render(){
+  const root = document.getElementById("root");
+  if(S.screen==="login") root.innerHTML = renderLogin();
+  else if(S.screen==="register") root.innerHTML = renderRegister();
+  else {
+    if(S.user?.role==="secretaire") root.innerHTML = renderApp(renderSecretaire);
+    else if(S.user?.role==="prof") root.innerHTML = renderApp(renderProf);
+    else root.innerHTML = renderApp(renderEleve);
+  }
+  if(S.modal) document.getElementById("root").insertAdjacentHTML("beforeend", renderModal());
+  attachAll();
+}
+
+// ══════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════
+function renderLogin(){
+  return `<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div class="auth-logo-text">EduBénin IA</div>
+    </div>
+    <div class="auth-title">Connexion</div>
+    <div class="auth-sub">Plateforme éducative intelligente · CP → Terminale</div>
+    <div class="role-tabs">
+      <button class="rtab ${S.loginRole==="eleve"?"active":""}" data-lrole="eleve"><i class="ti ti-school" aria-hidden="true"></i> Élève</button>
+      <button class="rtab ${S.loginRole==="prof"?"active":""}" data-lrole="prof"><i class="ti ti-chalkboard" aria-hidden="true"></i> Professeur</button>
+      <button class="rtab ${S.loginRole==="secretaire"?"active":""}" data-lrole="secretaire"><i class="ti ti-building" aria-hidden="true"></i> Administration</button>
+    </div>
+    <div class="err-msg" id="login-err">Identifiants incorrects. Vérifiez vos informations.</div>
+    <div class="field"><label>Identifiant</label><input id="inp-id" placeholder="Votre identifiant"/></div>
+    <div class="field"><label>Mot de passe</label><input id="inp-mdp" type="password" placeholder="••••••"/></div>
+    <button class="btn btn-primary" id="btn-login" style="width:100%;padding:11px">Se connecter</button>
+    <button class="auth-link" id="btn-go-register">Première connexion ? Créer mon compte</button>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);text-align:center">
+      <strong>Démo :</strong> sec001 / prof001 / e001 — mdp : 1234
+    </div>
+  </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// REGISTER
+// ══════════════════════════════════════════════════════════
+function renderRegister(){
+  const isProf = S.regRole==="prof";
+  const nivGrid = NIVEAUX.map(n=>`<button class="niv-btn ${isProf?(S.selNiveauxReg.includes(n)?"sel":""):(S.selNiveauReg===n?"sel":"")}" data-niv="${n}" data-multi="${isProf?1:0}">${n}</button>`).join("");
+  return `<div class="auth-bg">
+  <div class="auth-card" style="max-width:440px">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div class="auth-logo-text">EduBénin IA</div>
+    </div>
+    <div class="auth-title">Créer mon compte</div>
+    <div class="auth-sub">Inscription — première connexion</div>
+    <div class="role-tabs">
+      <button class="rtab ${S.regRole==="eleve"?"active":""}" data-rrole="eleve"><i class="ti ti-school" aria-hidden="true"></i> Élève</button>
+      <button class="rtab ${S.regRole==="prof"?"active":""}" data-rrole="prof"><i class="ti ti-chalkboard" aria-hidden="true"></i> Professeur</button>
+    </div>
+    <div class="err-msg" id="reg-err">Remplissez tous les champs obligatoires.</div>
+    <div class="ok-msg" id="reg-ok">Compte créé avec succès ! Connexion en cours...</div>
+    <div class="field"><label>Prénom et nom *</label><input id="reg-nom" placeholder="Ex: Awa Koffi"/></div>
+    <div class="field"><label>Identifiant de connexion *</label><input id="reg-id" placeholder="Ex: awa.koffi"/></div>
+    <div class="field"><label>Mot de passe *</label><input id="reg-mdp" type="password" placeholder="Choisir un mot de passe"/></div>
+    ${isProf ? `
+    <div class="field">
+      <label>Mes classes (sélectionner toutes) *</label>
+      <div class="niv-grid">${nivGrid}</div>
+    </div>
+    <div class="field"><label>Code école *</label><input id="reg-code" placeholder="Fourni par l'administration (ex: BENIN-2026)"/></div>
+    ` : `
+    <div class="field">
+      <label>Mon niveau scolaire *</label>
+      <div class="niv-grid">${nivGrid}</div>
+    </div>
+    <div style="background:var(--sky);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue);margin-bottom:12px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> 
+      Pour accéder à l'application, votre présence doit d'abord être enregistrée par la secrétaire de votre école.
+    </div>
+    `}
+    <button class="btn btn-primary" id="btn-register" style="width:100%;padding:11px">Créer mon compte</button>
+    <button class="auth-link" id="btn-go-login">Déjà un compte ? Se connecter</button>
+  </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// APP SHELL
+// ══════════════════════════════════════════════════════════
+function renderApp(contentFn){
+  const u = S.user;
+  const roleLabel = u.role==="secretaire"?"Administration":u.role==="prof"?("Professeur · "+(u.classes||[]).join(", ")):`Élève · ${u.classe}`;
+  const tabs = getTabsFor(u.role);
+  return `
+  <div style="display:flex;flex-direction:column;min-height:100vh">
+  <div class="topbar">
+    <div class="tlogo"><i class="ti ti-school" aria-hidden="true"></i> EduBénin IA</div>
+    <div class="tright">
+      <span class="tbadge">${u.role==="secretaire"?"Admin":u.role==="prof"?"Professeur":"Élève"}</span>
+      <span class="tuser"><i class="ti ti-user" aria-hidden="true"></i> ${u.nom}</span>
+      <button class="tbtn-logout" id="btn-logout">Déconnexion</button>
+    </div>
+  </div>
+  <div class="nav">
+    ${tabs.map((t,i)=>`<div class="ntab ${S.tab===i?"active":""}" data-tab="${i}"><i class="ti ${t.icon}" aria-hidden="true"></i> ${t.label}</div>`).join("")}
+  </div>
+  <div class="page-wrap">${contentFn()}</div>
+  </div>`;
+}
+
+function getTabsFor(role){
+  if(role==="eleve") return [
+    {icon:"ti-layout-dashboard",label:"Mon tableau de bord"},
+    {icon:"ti-pencil",label:"Exercices IA"},
+    {icon:"ti-message-dots",label:"Assistant IA"},
+    {icon:"ti-book",label:"Mes cours"},
+  ];
+  if(role==="prof") return [
+    {icon:"ti-layout-dashboard",label:"Tableau de bord"},
+    {icon:"ti-users",label:"Mes élèves"},
+    {icon:"ti-bell",label:"Difficultés & Alertes"},
+    {icon:"ti-send",label:"Partager un contenu"},
+  ];
+  // secretaire
+  return [
+    {icon:"ti-layout-dashboard",label:"Vue d'ensemble"},
+    {icon:"ti-user-plus",label:"Inscrire un élève"},
+    {icon:"ti-users",label:"Tous les élèves"},
+    {icon:"ti-settings",label:"Matières & Classes"},
+  ];
+}
+
+// ══════════════════════════════════════════════════════════
+// ÉLÈVE VIEWS
+// ══════════════════════════════════════════════════════════
+function renderEleve(){
+  return [renderEleveDash, renderEleveEx, renderEleveChat, renderEleveCours][S.tab]();
+}
+
+function renderEleveDash(){
+  const u = S.user;
+  const mats = u.matieres||{};
+  const vals = Object.values(mats);
+  const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  const prog = u.progression>=0?`+${u.progression}%`:`${u.progression}%`;
+  const progColor = u.progression>=0?"var(--green)":"var(--red)";
+  const contenusClasse = DB.contenus.filter(c=>c.classe===u.classe);
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val" style="color:${scoreColor(avg)}">${avg}%</div><div class="metric-lab">Score global</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${(u.diffs||[]).length}</div><div class="metric-lab">Difficultés IA</div></div>
+    <div class="metric"><div class="metric-val" style="color:${progColor}">${prog}</div><div class="metric-lab">Cette semaine</div></div>
+    <div class="metric"><div class="metric-val">${u.exercices||0}</div><div class="metric-lab">Exercices faits</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brain" aria-hidden="true"></i> Analyse de mon profil par l'IA</div>
+    <div id="ai-dash-box">${S.aiSummary
+      ?`<div class="ai-box">${S.aiSummary}</div>`
+      :`<div class="ai-box loading"><span class="spinner"></span>L'IA analyse votre profil…</div>`}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" data-action="goto-ex">Faire mes exercices</button>
+      <button class="btn btn-sm" data-action="goto-chat">Poser une question</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Mes matières</div>
+    ${Object.entries(mats).map(([m,s])=>`
+    <div class="row">
+      <div style="flex:1;font-size:13px">${m}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${s}%;background:${scoreColor(s)}"></div></div>
+      <div style="font-size:13px;font-weight:600;color:${scoreColor(s)};width:36px;text-align:right">${s}%</div>
+    </div>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Mes difficultés détectées</div>
+    ${(u.diffs||[]).map(d=>`<div class="row" style="gap:8px"><i class="ti ti-point-filled" style="color:var(--amber)" aria-hidden="true"></i><span style="font-size:13px">${d}</span></div>`).join("")}
+    ${!(u.diffs||[]).length?`<div style="color:var(--text3);font-size:13px">Aucune difficulté détectée. Continuez comme ça !</div>`:""}
+  </div>
+  ${contenusClasse.length?`<div class="card">
+    <div class="card-title"><i class="ti ti-file-text" aria-hidden="true"></i> Contenus partagés par mes professeurs</div>
+    ${contenusClasse.map(c=>`<div class="row">
+      <i class="ti ti-file-description" style="font-size:20px;color:var(--blue)" aria-hidden="true"></i>
+      <div style="flex:1"><div style="font-weight:600">${c.titre}</div><div style="font-size:12px;color:var(--text2)">${c.matiere} · ${c.auteur} · ${c.date}</div></div>
+      <span class="badge badge-ok">Reçu</span>
+    </div>`).join("")}
+  </div>`:""}`;
+}
+
+function renderEleveEx(){
+  const u = S.user;
+  const exos = DB.exercices.filter(e=>e.classe===u.classe);
+  if(!exos.length){
+    return `<div class="card"><div style="color:var(--text2);font-size:13px">Aucun exercice disponible pour votre classe pour le moment. Votre professeur en ajoutera bientôt.</div></div>`;
+  }
+  const idx = S.exIdx % exos.length;
+  const ex = exos[idx];
+  return `
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div><span class="tag">${ex.matiere}</span> <span class="tag">${u.classe}</span></div>
+      <div style="font-size:12px;color:var(--text2)">${idx+1} / ${exos.length}</div>
+    </div>
+    <div class="card-title">Question</div>
+    <div style="font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500">${ex.question}</div>
+    <div id="choices">
+      ${ex.choices.map((c,i)=>`<div class="choice-opt ${S.chosenAns===null?"":S.chosenAns===i?(i===ex.correct?"correct":"wrong"):(i===ex.correct?"correct":"")}" data-choice="${i}">
+        <span style="width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${String.fromCharCode(65+i)}</span>
+        ${c}
+      </div>`).join("")}
+    </div>
+    ${S.chosenAns!==null?`<div style="margin-top:12px;padding:10px 14px;background:${S.chosenAns===ex.correct?"var(--green-lt)":"var(--red-lt)"};border-radius:var(--radius);font-size:13px;color:${S.chosenAns===ex.correct?"var(--green)":"var(--red)"}">
+      <strong>${S.chosenAns===ex.correct?"✓ Bravo !":"✗ Pas tout à fait."}</strong> ${ex.expl}
+    </div>`:""}
+    <div id="ai-ex-box" style="margin-top:10px">${S.aiExercice?`<div class="ai-box">${S.aiExercice}</div>`:S.chosenAns!==null?`<div class="ai-box loading"><span class="spinner"></span>L'IA prépare votre retour…</div>`:""}</div>
+    ${S.chosenAns!==null?`<button class="btn btn-primary btn-sm" data-action="next-ex" style="margin-top:10px">Exercice suivant →</button>`:""}
+  </div>`;
+}
+
+function renderEleveChat(){
+  const u = S.user;
+  return `
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title"><i class="ti ti-message-dots" aria-hidden="true"></i> Assistant IA — ${u.nom} · ${u.classe}</div>
+    <div id="chat-messages" style="min-height:180px;max-height:340px;overflow-y:auto;margin-bottom:4px">
+      ${S.chatMsgs.length===0?`<div style="font-size:13px;color:var(--text2);padding:8px 0">Bonjour ${u.nom} ! Pose-moi toutes tes questions sur tes cours en ${u.classe}. Je suis là pour t'aider 24h/24 !</div>`:""}
+      ${S.chatMsgs.map(m=>`<div class="chat-msg ${m.role==="user"?"chat-user":"chat-ai"}">${m.content}</div>`).join("")}
+      ${S.chatLoading?`<div class="chat-msg chat-ai"><span class="spinner"></span>L'IA réfléchit…</div>`:""}
+    </div>
+    <div class="chat-row">
+      <input id="chat-inp" placeholder="Pose ta question ici…" ${S.chatLoading?"disabled":""}/>
+      <button class="btn btn-primary btn-sm" id="btn-send" ${S.chatLoading?"disabled":""}>Envoyer</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+      ${["Explique-moi les fractions","Qu'est-ce que la photosynthèse ?","Comment résoudre une équation ?","Quel est le subjonctif ?"].map(q=>`<button class="btn btn-sm" data-quick="${q}">${q}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function renderEleveCours(){
+  const u = S.user;
+  const matieres = getMatieres(u.classe);
+  return matieres.map(m=>{
+    const s = u.matieres?.[m]||0;
+    return `<div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-weight:600;font-size:14px">${m}</div>
+        <div style="font-size:13px;font-weight:600;color:${scoreColor(s)}">${s||"—"}%</div>
+      </div>
+      <div style="background:var(--bg);border-radius:4px;height:7px;margin-bottom:12px"><div style="height:7px;border-radius:4px;background:${scoreColor(s)};width:${s}%"></div></div>
+      <button class="btn btn-sm" data-revise="${m}"><i class="ti ti-sparkles" aria-hidden="true"></i> Réviser avec l'IA</button>
+    </div>`;
+  }).join("");
+}
+
+// ══════════════════════════════════════════════════════════
+// PROF VIEWS
+// ══════════════════════════════════════════════════════════
+function renderProf(){
+  return [renderProfDash, renderProfEleves, renderProfAlerts, renderProfShare][S.tab]();
+}
+
+function renderProfDash(){
+  const u = S.user;
+  const mesEleves = DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+  const vals = mesEleves.map(e=>Object.values(e.matieres||{}).reduce((a,b)=>a+b,0)/Math.max(Object.keys(e.matieres||{}).length,1));
+  const moy = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  const enDiff = mesEleves.filter(e=>e.diffs&&e.diffs.length>0).length;
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val">${mesEleves.length}</div><div class="metric-lab">Mes élèves</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${enDiff}</div><div class="metric-lab">En difficulté</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--green)">${mesEleves.filter(e=>(e.progression||0)>0).length}</div><div class="metric-lab">En progression</div></div>
+    <div class="metric"><div class="metric-val">${moy}%</div><div class="metric-lab">Score moyen</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brain" aria-hidden="true"></i> Résumé IA — ${(u.classes||[]).join(", ")}</div>
+    <div id="ai-prof-box">${S.aiSummary
+      ?`<div class="ai-box">${S.aiSummary}</div>`
+      :`<div class="ai-box loading"><span class="spinner"></span>L'IA analyse vos classes…</div>`}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Aperçu de mes classes</div>
+    ${(u.classes||[]).map(cl=>{
+      const eleves = DB.users.filter(e=>e.role==="eleve"&&e.classe===cl);
+      return `<div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-weight:700;color:var(--blue)">${cl}</span>
+          <span style="font-size:12px;color:var(--text2)">${eleves.length} élève${eleves.length!==1?"s":""}</span>
+        </div>
+        ${eleves.slice(0,3).map(e=>eleveMiniRow(e)).join("")}
+        ${eleves.length>3?`<div style="font-size:12px;color:var(--text2);margin-top:6px">+${eleves.length-3} autres élèves</div>`:""}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function eleveMiniRow(e){
+  const vals = Object.values(e.matieres||{});
+  const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  return `<div class="row">
+    <div class="avatar">${ini(e.nom)}</div>
+    <div style="flex:1"><div style="font-weight:500">${e.nom}</div><div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).slice(0,2).join(", ")||"Aucune difficulté"}</div></div>
+    <div class="bar-bg" style="margin-right:8px"><div class="bar-fill" style="width:${avg}%;background:${scoreColor(avg)}"></div></div>
+    <div style="font-size:13px;font-weight:600;color:${scoreColor(avg)};width:34px;text-align:right">${avg}%</div>
+  </div>`;
+}
+
+function renderProfEleves(){
+  const u = S.user;
+  const filtre = S.promoFilter || (u.classes||[])[0];
+  return `
+  <div class="promo-filter">
+    ${(u.classes||[]).map(cl=>`<button class="pf-btn ${filtre===cl?"active":""}" data-pfilter="${cl}">${cl}</button>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Élèves de ${filtre} — difficultés détectées</div>
+    ${(()=>{
+      const eleves = DB.users.filter(e=>e.role==="eleve"&&e.classe===filtre);
+      if(!eleves.length) return `<div style="color:var(--text2);font-size:13px">Aucun élève inscrit en ${filtre}.</div>`;
+      return eleves.map(e=>{
+        const vals = Object.values(e.matieres||{});
+        const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+        return `<div class="row">
+          <div class="avatar">${ini(e.nom)}</div>
+          <div style="flex:1">
+            <div style="font-weight:600">${e.nom}</div>
+            <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).join(", ")||"Aucune difficulté détectée"}</div>
+          </div>
+          ${scoreBadge(avg)}
+          <div class="bar-bg"><div class="bar-fill" style="width:${avg}%;background:${scoreColor(avg)}"></div></div>
+          <div style="font-size:13px;font-weight:600;width:34px;text-align:right;color:${scoreColor(avg)}">${avg}%</div>
+          <button class="btn btn-sm btn-ghost" data-detail-eleve="${e.id}"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>`;
+      }).join("");
+    })()}
+  </div>`;
+}
+
+function renderProfAlerts(){
+  const u = S.user;
+  const filtre = S.promoFilter || (u.classes||[])[0];
+  const eleves = DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+  const critiques = eleves.filter(e=>{
+    const vals=Object.values(e.matieres||{});
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    return avg<50&&(e.diffs||[]).length>0;
+  });
+  const attention = eleves.filter(e=>{
+    const vals=Object.values(e.matieres||{});
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    return avg>=50&&avg<70&&(e.diffs||[]).length>0;
+  });
+  const filtreOpts = u.classes||[];
+  return `
+  <div class="promo-filter">
+    ${filtreOpts.map(cl=>`<button class="pf-btn ${filtre===cl?"active":""}" data-pfilter="${cl}">${cl}</button>`).join("")}
+    <button class="pf-btn ${!S.promoFilter?"active":""}" data-pfilter="__all__">Toutes mes classes</button>
+  </div>
+  ${critiques.length?`<div class="card" style="border-left:3px solid var(--red)">
+    <div class="card-title" style="color:var(--red)"><i class="ti ti-alert-circle" aria-hidden="true"></i> Alertes critiques</div>
+    ${critiques.map(e=>`<div class="row">
+      <div class="avatar" style="background:var(--red-lt);color:var(--red)">${ini(e.nom)}</div>
+      <div style="flex:1"><div style="font-weight:600">${e.nom} <span class="badge badge-gray" style="font-size:10px">${e.classe}</span></div>
+      <div style="font-size:11px;color:var(--red)">Difficultés : ${(e.diffs||[]).join(", ")||"—"}</div></div>
+      <button class="btn btn-sm" data-gen-ex="${e.nom}|${(e.diffs||[]).join(",")}">Exercices IA</button>
+    </div>`).join("")}
+  </div>`:""}
+  ${attention.length?`<div class="card" style="border-left:3px solid var(--amber)">
+    <div class="card-title" style="color:var(--amber)"><i class="ti ti-alert-triangle" aria-hidden="true"></i> À surveiller</div>
+    ${attention.map(e=>`<div class="row">
+      <div class="avatar" style="background:var(--amber-lt);color:var(--amber)">${ini(e.nom)}</div>
+      <div style="flex:1"><div style="font-weight:600">${e.nom} <span class="badge badge-gray" style="font-size:10px">${e.classe}</span></div>
+      <div style="font-size:11px;color:var(--amber)">Points à renforcer : ${(e.diffs||[]).join(", ")||"—"}</div></div>
+    </div>`).join("")}
+  </div>`:""}
+  ${!critiques.length&&!attention.length?`<div class="card"><div style="color:var(--text2);font-size:13px"><i class="ti ti-circle-check" style="color:var(--green)" aria-hidden="true"></i> Aucune alerte active pour vos classes. Tous les élèves progressent correctement.</div></div>`:""}`;
+}
+
+function renderProfShare(){
+  const u = S.user;
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-send" aria-hidden="true"></i> Partager un contenu pédagogique</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Le contenu sera visible par tous les élèves de la classe ciblée dans leur tableau de bord.</div>
+    <div class="field"><label>Classe cible</label>
+      <select id="sh-classe">${(u.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join("")}</select>
+    </div>
+    <div class="field"><label>Matière</label>
+      <select id="sh-matiere">
+        ${getMatieres((u.classes||[])[0]||"3ème").map(m=>`<option>${m}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field"><label>Titre</label><input id="sh-titre" placeholder="Ex: Révision équations — Exercices niveau 2"/></div>
+    <div class="field"><label>Destinataires</label>
+      <select id="sh-dest"><option>Toute la classe</option><option>Élèves en difficulté uniquement</option><option>Élèves avancés</option></select>
+    </div>
+    <div class="field"><label>Contenu</label><textarea id="sh-content" placeholder="Coller le contenu, un lien ou une description…"></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-primary" id="btn-share">Partager à la classe</button>
+      <button class="btn btn-sm" data-action="gen-contenu">Générer avec l'IA ↗</button>
+    </div>
+    ${S.partageSuccess?`<div style="margin-top:10px;color:var(--green);font-size:13px;font-weight:600"><i class="ti ti-check" aria-hidden="true"></i> Contenu partagé avec succès !</div>`:""}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-history" aria-hidden="true"></i> Contenus partagés récemment</div>
+    ${DB.contenus.filter(c=>(u.classes||[]).includes(c.classe)).map(c=>`<div class="row">
+      <i class="ti ti-file-text" style="font-size:20px;color:var(--blue)" aria-hidden="true"></i>
+      <div style="flex:1"><div style="font-weight:600">${c.titre}</div><div style="font-size:11px;color:var(--text2)">${c.matiere} · ${c.classe} · ${c.dest} · ${c.date}</div></div>
+      <span class="badge badge-ok">Envoyé</span>
+    </div>`).join("")||`<div style="font-size:13px;color:var(--text2)">Aucun contenu partagé pour le moment.</div>`}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECRÉTAIRE VIEWS
+// ══════════════════════════════════════════════════════════
+function renderSecretaire(){
+  return [renderSecDash, renderSecInscription, renderSecEleves, renderSecMatieres][S.tab]();
+}
+
+function renderSecDash(){
+  const eleves = DB.users.filter(u=>u.role==="eleve");
+  const promos = [...new Set(eleves.map(e=>e.classe))];
+  const profs = DB.users.filter(u=>u.role==="prof");
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val">${eleves.length}</div><div class="metric-lab">Élèves inscrits</div></div>
+    <div class="metric"><div class="metric-val">${profs.length}</div><div class="metric-lab">Professeurs</div></div>
+    <div class="metric"><div class="metric-val">${promos.length}</div><div class="metric-lab">Classes actives</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${eleves.filter(e=>(e.diffs||[]).length>0).length}</div><div class="metric-lab">En difficulté</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-building-school" aria-hidden="true"></i> Répartition par niveau</div>
+    ${NIVEAUX.map(n=>{
+      const cnt = eleves.filter(e=>e.classe===n).length;
+      if(!cnt) return "";
+      return `<div class="row"><div style="flex:1;font-weight:500">${n}</div>
+        <div class="bar-bg" style="width:120px;margin-right:8px"><div class="bar-fill" style="width:${Math.min(cnt*15,100)}%;background:var(--blue)"></div></div>
+        <div style="font-size:13px;font-weight:600;color:var(--blue);width:50px;text-align:right">${cnt} élève${cnt>1?"s":""}</div>
+      </div>`;
+    }).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Élèves en difficulté (vue globale)</div>
+    ${eleves.filter(e=>(e.diffs||[]).length>0).slice(0,5).map(e=>`<div class="row">
+      <div class="avatar">${ini(e.nom)}</div>
+      <div style="flex:1"><div style="font-weight:500">${e.nom}</div><div style="font-size:11px;color:var(--text2)">${e.classe} — ${(e.diffs||[]).join(", ")}</div></div>
+    </div>`).join("")||`<div style="font-size:13px;color:var(--text2)">Aucun élève en difficulté détectée.</div>`}
+  </div>`;
+}
+
+function renderSecInscription(){
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user-plus" aria-hidden="true"></i> Inscrire un nouvel élève</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px;background:var(--sky);padding:10px 12px;border-radius:var(--radius)">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> 
+      En ajoutant l'élève ici, il sera présent dans la base de données et pourra créer son compte lors de sa première connexion.
+    </div>
+    <div class="err-msg" id="add-err">Veuillez remplir tous les champs obligatoires.</div>
+    <div class="ok-msg" id="add-ok">Élève inscrit avec succès ! Il peut maintenant créer son compte.</div>
+    <div class="field"><label>Prénom et nom de l'élève *</label><input id="add-nom" placeholder="Ex: Koffi Agossou"/></div>
+    <div class="field"><label>Niveau scolaire *</label>
+      <select id="add-classe">
+        <optgroup label="Primaire">${PRIMAIRE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Collège">${COLLEGE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Lycée">${LYCEE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+      </select>
+    </div>
+    <div class="field"><label>Identifiant de connexion *</label><input id="add-id" placeholder="Ex: koffi.agossou"/></div>
+    <div class="field"><label>Mot de passe provisoire *</label><input id="add-mdp" placeholder="Ex: benin2026"/></div>
+    <button class="btn btn-primary" id="btn-add-eleve" style="padding:10px 20px"><i class="ti ti-user-plus" aria-hidden="true"></i> Inscrire l'élève</button>
+  </div>`;
+}
+
+function renderSecEleves(){
+  const eleves = DB.users.filter(u=>u.role==="eleve");
+  const niveauActif = S.promoFilter || "Tous";
+  const filtres = ["Tous", ...NIVEAUX.filter(n=>eleves.some(e=>e.classe===n))];
+  const filteredEleves = niveauActif==="Tous"?eleves:eleves.filter(e=>e.classe===niveauActif);
+  return `
+  <div class="promo-filter">
+    ${filtres.map(f=>`<button class="pf-btn ${(niveauActif||"Tous")===f?"active":""}" data-pfilter="${f}">${f}</button>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> ${filteredEleves.length} élève${filteredEleves.length!==1?"s":""} — ${niveauActif}</div>
+    ${filteredEleves.length?filteredEleves.map(e=>{
+      const vals=Object.values(e.matieres||{});
+      const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+      return `<div class="row">
+        <div class="avatar">${ini(e.nom)}</div>
+        <div style="flex:1"><div style="font-weight:600">${e.nom} <span class="badge badge-gray" style="font-size:10px">${e.classe}</span></div>
+        <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).length?("Difficultés : "+(e.diffs||[]).join(", ")):"Aucune difficulté détectée"}</div></div>
+        ${scoreBadge(avg)}
+        <button class="btn btn-sm btn-ghost" data-detail-eleve="${e.id}"><i class="ti ti-eye" aria-hidden="true"></i></button>
+      </div>`;
+    }).join(""):
+    `<div style="font-size:13px;color:var(--text2)">Aucun élève dans ce niveau.</div>`}
+  </div>`;
+}
+
+function renderSecMatieres(){
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-book" aria-hidden="true"></i> Matières standard par cycle</div>
+    <div style="margin-bottom:12px">
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">CP → CM2 (Primaire)</div>
+      <div>${MATIERES_BASE.primaire.map(m=>`<span class="tag">${m}</span>`).join("")}</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">6ème → 3ème (Collège)</div>
+      <div>${MATIERES_BASE.college.map(m=>`<span class="tag">${m}</span>`).join("")}<span class="tag" style="background:var(--amber-lt);color:var(--amber)">+ Allemand/Espagnol (4ème)</span></div>
+    </div>
+    <div>
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">2nde → Terminale (Lycée)</div>
+      <div>${MATIERES_BASE.lycee.map(m=>`<span class="tag">${m}</span>`).join("")}</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter une matière personnalisée</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Vous pouvez ajouter des matières spécifiques à votre école pour une classe donnée. Elles s'ajouteront aux matières standard.</div>
+    <div class="field"><label>Classe cible</label>
+      <select id="cm-classe">
+        <optgroup label="Primaire">${PRIMAIRE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Collège">${COLLEGE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Lycée">${LYCEE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+      </select>
+    </div>
+    <div class="field"><label>Nom de la matière</label><input id="cm-nom" placeholder="Ex: Informatique, Arts plastiques, EPS…"/></div>
+    <button class="btn btn-primary btn-sm" id="btn-add-mat"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter</button>
+    <div id="cm-ok" style="display:none;margin-top:8px;color:var(--green);font-size:12px">Matière ajoutée avec succès !</div>
+  </div>
+  ${(()=>{
+    const customs = Object.entries(DB.matieresCustom).filter(([,v])=>v.length>0);
+    if(!customs.length) return "";
+    return `<div class="card">
+      <div class="card-title"><i class="ti ti-settings" aria-hidden="true"></i> Matières personnalisées par classe</div>
+      ${customs.map(([niv,mats])=>`<div style="margin-bottom:10px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">${niv}</div>
+        <div>${mats.map(m=>`<span class="mat-chip">${m} <span class="rm" data-rm-mat="${niv}|${m}">×</span></span>`).join("")}</div>
+      </div>`).join("")}
+    </div>`;
+  })()}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════════
+function renderModal(){
+  if(S.modal==="eleve-detail"){
+    const e = DB.users.find(u=>u.id===S.modalData.id);
+    if(!e) return "";
+    const vals = Object.values(e.matieres||{});
+    const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    return `<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title"><i class="ti ti-user-circle" style="color:var(--blue)" aria-hidden="true"></i> ${e.nom}</div>
+        <button class="btn btn-sm" data-close-modal>✕</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div class="avatar" style="width:46px;height:46px;font-size:16px">${ini(e.nom)}</div>
+        <div><div style="font-weight:600">${e.nom}</div><div style="font-size:12px;color:var(--text2)">${e.classe} · Score moyen : <strong style="color:${scoreColor(avg)}">${avg}%</strong></div></div>
+      </div>
+      ${Object.entries(e.matieres||{}).map(([m,s])=>`
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${m}</span><span style="font-weight:600;color:${scoreColor(s)}">${s}%</span></div>
+        <div style="background:var(--bg);border-radius:4px;height:7px"><div style="height:7px;border-radius:4px;background:${scoreColor(s)};width:${s}%"></div></div>
+      </div>`).join("")}
+      ${(e.diffs||[]).length?`<div style="margin-top:14px">
+        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--text2)">DIFFICULTÉS DÉTECTÉES</div>
+        ${(e.diffs||[]).map(d=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)"><i class="ti ti-alert-triangle" style="color:var(--amber)" aria-hidden="true"></i>${d}</div>`).join("")}
+      </div>`:""}
+      <button class="btn btn-sm" data-close-modal style="margin-top:16px;width:100%">Fermer</button>
+    </div>
+    </div>`;
+  }
+  return "";
+}
+
+// ══════════════════════════════════════════════════════════
+// EVENT BINDING
+// ══════════════════════════════════════════════════════════
+function attachAll(){
+  // ── LOGIN ──
+  document.querySelectorAll("[data-lrole]").forEach(el=>{
+    el.addEventListener("click",()=>{S.loginRole=el.dataset.lrole;render()});
+  });
+  document.getElementById("btn-login")?.addEventListener("click",doLogin);
+  document.getElementById("inp-mdp")?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+  document.getElementById("btn-go-register")?.addEventListener("click",()=>{
+    S.screen="register";S.regRole="eleve";S.selNiveauxReg=[];S.selNiveauReg=null;render();
+  });
+
+  // ── REGISTER ──
+  document.querySelectorAll("[data-rrole]").forEach(el=>{
+    el.addEventListener("click",()=>{S.regRole=el.dataset.rrole;S.selNiveauxReg=[];S.selNiveauReg=null;render()});
+  });
+  document.querySelectorAll(".niv-btn").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const n=el.dataset.niv;
+      if(el.dataset.multi==="1"){
+        if(S.selNiveauxReg.includes(n)) S.selNiveauxReg=S.selNiveauxReg.filter(x=>x!==n);
+        else S.selNiveauxReg.push(n);
+      } else {
+        S.selNiveauReg=n;
+      }
+      document.querySelectorAll(".niv-btn").forEach(b=>{
+        const bn=b.dataset.niv;
+        b.classList.toggle("sel",el.dataset.multi==="1"?S.selNiveauxReg.includes(bn):S.selNiveauReg===bn);
+      });
+    });
+  });
+  document.getElementById("btn-register")?.addEventListener("click",doRegister);
+  document.getElementById("btn-go-login")?.addEventListener("click",()=>{S.screen="login";render()});
+
+  // ── APP ──
+  document.getElementById("btn-logout")?.addEventListener("click",()=>{
+    S={...S,screen:"login",user:null,tab:0,chatMsgs:[],aiSummary:null,partageSuccess:false,modal:null,promoFilter:null};render();
+  });
+  document.querySelectorAll("[data-tab]").forEach(el=>{
+    el.addEventListener("click",()=>{S.tab=parseInt(el.dataset.tab);S.chosenAns=null;S.aiExercice=null;S.partageSuccess=false;render()});
+  });
+  document.querySelectorAll("[data-action]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const a=el.dataset.action;
+      if(a==="goto-ex"){S.tab=1;S.chosenAns=null;render();}
+      if(a==="goto-chat"){S.tab=2;render();}
+      if(a==="next-ex"){S.exIdx++;S.chosenAns=null;S.aiExercice=null;render();}
+      if(a==="gen-contenu") generateContenuIA();
+    });
+  });
+  document.querySelectorAll("[data-pfilter]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.promoFilter=el.dataset.pfilter==="__all__"?null:el.dataset.pfilter;render();
+    });
+  });
+  document.querySelectorAll("[data-choice]").forEach(el=>{
+    if(S.chosenAns===null){
+      el.addEventListener("click",()=>{S.chosenAns=parseInt(el.dataset.choice);render();loadAiExercice();});
+    }
+  });
+
+  // ── CHAT ──
+  const ci=document.getElementById("chat-inp");
+  document.getElementById("btn-send")?.addEventListener("click",sendChat);
+  ci?.addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});
+  document.querySelectorAll("[data-quick]").forEach(el=>{
+    el.addEventListener("click",()=>{if(ci)ci.value=el.dataset.quick;sendChat();});
+  });
+  document.querySelectorAll("[data-revise]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.tab=2;render();
+      setTimeout(()=>{const i=document.getElementById("chat-inp");if(i)i.value=`Explique-moi ${el.dataset.revise} pour la classe de ${S.user.classe}`;},80);
+    });
+  });
+  document.querySelectorAll("[data-gen-ex]").forEach(el=>{
+    el.addEventListener("click",()=>sendPrompt?.(`Génère 3 exercices personnalisés pour ${el.dataset.genEx.split("|")[0]} sur : ${el.dataset.genEx.split("|")[1]}`));
+  });
+
+  // ── PARTAGE ──
+  document.getElementById("btn-share")?.addEventListener("click",doShare);
+
+  // ── SECRÉTAIRE : inscription ──
+  document.getElementById("btn-add-eleve")?.addEventListener("click",doAddEleve);
+
+  // ── SECRÉTAIRE : matières ──
+  document.getElementById("btn-add-mat")?.addEventListener("click",doAddMatiere);
+  document.querySelectorAll("[data-rm-mat]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const [niv,mat]=el.dataset.rmMat.split("|");
+      DB.matieresCustom[niv]=(DB.matieresCustom[niv]||[]).filter(m=>m!==mat);
+      render();
+    });
+  });
+
+  // ── MODALS ──
+  document.querySelectorAll("[data-detail-eleve]").forEach(el=>{
+    el.addEventListener("click",()=>{S.modal="eleve-detail";S.modalData={id:el.dataset.detailEleve};render();});
+  });
+  document.querySelectorAll("[data-close-modal]").forEach(el=>{
+    el.addEventListener("click",()=>{S.modal=null;S.modalData={};render();});
+  });
+  document.getElementById("modal-overlay")?.addEventListener("click",e=>{
+    if(e.target.id==="modal-overlay"){S.modal=null;S.modalData={};render();}
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════════════════════════
+function doLogin(){
+  const id=(document.getElementById("inp-id")?.value||"").trim();
+  const mdp=(document.getElementById("inp-mdp")?.value||"").trim();
+  const err=document.getElementById("login-err");
+  const u=DB.users.find(u=>u.id===id&&u.mdp===mdp);
+  if(!u||(S.loginRole!=="secretaire"&&u.role!==S.loginRole)){err.style.display="block";return;}
+  err.style.display="none";
+  S.user=u;S.screen="app";S.tab=0;S.chatMsgs=[];S.aiSummary=null;S.promoFilter=null;
+  render();
+  loadAiSummary();
+}
+
+function doRegister(){
+  const nom=(document.getElementById("reg-nom")?.value||"").trim();
+  const id=(document.getElementById("reg-id")?.value||"").trim();
+  const mdp=(document.getElementById("reg-mdp")?.value||"").trim();
+  const err=document.getElementById("reg-err");
+  const ok=document.getElementById("reg-ok");
+  err.style.display="none";
+  if(!nom||!id||!mdp){err.textContent="Remplissez tous les champs obligatoires.";err.style.display="block";return;}
+  if(DB.users.find(u=>u.id===id)){err.textContent="Cet identifiant est déjà utilisé.";err.style.display="block";return;}
+  if(S.regRole==="eleve"){
+    if(!S.selNiveauReg){err.textContent="Veuillez sélectionner votre niveau scolaire.";err.style.display="block";return;}
+    // Vérifier si la secrétaire l'a inscrit (dans un vrai système)
+    // Ici en démo on crée le compte directement
+    const mats=getMatieres(S.selNiveauReg);
+    const matObj={};
+    mats.forEach(m=>matObj[m]=Math.floor(Math.random()*30)+40);
+    DB.users.push({id,nom,role:"eleve",classe:S.selNiveauReg,mdp,score:0,matieres:matObj,diffs:[],exercices:0,progression:0,inscritPar:"auto"});
+  } else {
+    const code=(document.getElementById("reg-code")?.value||"").trim();
+    if(code!=="BENIN-2026"){err.textContent="Code école invalide. Contactez l'administration.";err.style.display="block";return;}
+    if(!S.selNiveauxReg.length){err.textContent="Sélectionnez au moins une classe.";err.style.display="block";return;}
+    DB.users.push({id,nom,role:"prof",mdp,classes:S.selNiveauxReg});
+  }
+  ok.style.display="block";
+  setTimeout(()=>{
+    const newUser=DB.users.find(u=>u.id===id);
+    S.user=newUser;S.screen="app";S.tab=0;S.chatMsgs=[];S.aiSummary=null;
+    render();loadAiSummary();
+  },1400);
+}
+
+function doAddEleve(){
+  const nom=(document.getElementById("add-nom")?.value||"").trim();
+  const classe=document.getElementById("add-classe")?.value;
+  const id=(document.getElementById("add-id")?.value||"").trim();
+  const mdp=(document.getElementById("add-mdp")?.value||"").trim();
+  const err=document.getElementById("add-err");
+  const ok=document.getElementById("add-ok");
+  err.style.display="none";ok.style.display="none";
+  if(!nom||!id||!mdp||!classe){err.style.display="block";return;}
+  if(DB.users.find(u=>u.id===id)){err.textContent="Cet identifiant est déjà utilisé.";err.style.display="block";return;}
+  const mats=getMatieres(classe);
+  const matObj={};
+  mats.forEach(m=>matObj[m]=0);
+  DB.users.push({id,nom,role:"eleve",classe,mdp,score:0,matieres:matObj,diffs:[],exercices:0,progression:0,inscritPar:"secretaire"});
+  ok.style.display="block";
+  document.getElementById("add-nom").value="";
+  document.getElementById("add-id").value="";
+  document.getElementById("add-mdp").value="";
+  setTimeout(()=>{if(document.getElementById("add-ok"))document.getElementById("add-ok").style.display="none";},3000);
+}
+
+function doAddMatiere(){
+  const niv=document.getElementById("cm-classe")?.value;
+  const nom=(document.getElementById("cm-nom")?.value||"").trim();
+  if(!nom) return;
+  if(!DB.matieresCustom[niv]) DB.matieresCustom[niv]=[];
+  if(!DB.matieresCustom[niv].includes(nom)&&!getMatieresByNiveau(niv).includes(nom)){
+    DB.matieresCustom[niv].push(nom);
+  }
+  document.getElementById("cm-ok").style.display="block";
+  document.getElementById("cm-nom").value="";
+  setTimeout(()=>{if(document.getElementById("cm-ok"))document.getElementById("cm-ok").style.display="none";},2000);
+  render();
+}
+
+function doShare(){
+  const titre=(document.getElementById("sh-titre")?.value||"").trim();
+  const matiere=document.getElementById("sh-matiere")?.value||"";
+  const classe=document.getElementById("sh-classe")?.value||"";
+  const dest=document.getElementById("sh-dest")?.value||"Toute la classe";
+  const content=document.getElementById("sh-content")?.value||"";
+  if(!titre) return;
+  DB.contenus.unshift({id:newId("c"),titre,matiere,classe,dest,date:"Aujourd'hui",auteur:S.user.nom,contenu:content});
+  S.partageSuccess=true;
+  render();
+}
+
+// ══════════════════════════════════════════════════════════
+// IA CALLS
+// ══════════════════════════════════════════════════════════
+async function loadAiSummary(){
+  S.aiSummaryLoading=true;
+  const u=S.user;
+  let sys,prompt;
+  if(u.role==="eleve"){
+    const vals=Object.values(u.matieres||{});
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    sys="Tu es un assistant pédagogique bienveillant pour EduBénin IA, la plateforme éducative béninoise. Tu analyses les performances des élèves et donnes des conseils encourageants. Réponds toujours en français, de façon chaleureuse et motivante. Sois concis (3-4 phrases max).";
+    prompt=`L'élève ${u.nom} (classe de ${u.classe}) a un score moyen de ${avg}%. Ses matières : ${Object.entries(u.matieres||{}).map(([m,s])=>`${m}: ${s}%`).join(", ")}. Difficultés détectées : ${(u.diffs||[]).join(", ")||"aucune"}. Progression cette semaine : ${u.progression>0?"+":""}${u.progression||0}%. Fais une analyse courte et encourageante avec 1-2 recommandations concrètes.`;
+  } else if(u.role==="prof"){
+    const mesEleves=DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+    const allDiffs=mesEleves.flatMap(e=>e.diffs||[]);
+    const freq={};allDiffs.forEach(d=>{freq[d]=(freq[d]||0)+1;});
+    const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([d,n])=>`${d} (${n} élèves)`).join(", ");
+    sys="Tu es un assistant pédagogique pour les professeurs de EduBénin IA. Tu analyses les données de classe et fournis des recommandations concrètes. Réponds en français, de façon professionnelle et concise (3-4 phrases).";
+    prompt=`Le professeur ${u.nom} enseigne en ${(u.classes||[]).join(", ")}. Il a ${mesEleves.length} élèves au total. Difficultés les plus fréquentes : ${top||"aucune particulière"}. Fais un résumé pédagogique avec 2 recommandations pour la semaine.`;
+  } else return;
+  try{
+    const res=await callIA(sys,prompt);
+    S.aiSummary=res||`<i class="ti ti-sparkles" aria-hidden="true"></i> Analyse IA disponible avec la clé API configurée.`;
+  } catch(e){
+    S.aiSummary=`<i class="ti ti-sparkles" aria-hidden="true"></i> Analyse IA disponible avec la clé API configurée.`;
+  }
+  S.aiSummaryLoading=false;
+  const boxId=u.role==="prof"?"ai-prof-box":"ai-dash-box";
+  const box=document.getElementById(boxId);
+  if(box) box.innerHTML=`<div class="ai-box">${S.aiSummary}</div>`;
+}
+
+async function loadAiExercice(){
+  S.aiExLoading=true;
+  const u=S.user;
+  const exos=DB.exercices.filter(e=>e.classe===u.classe);
+  if(!exos.length) return;
+  const ex=exos[S.exIdx%exos.length];
+  const correct=S.chosenAns===ex.correct;
+  try{
+    const res=await callIA(
+      `Tu es un tuteur pédagogique pour EduBénin IA. Tu guides les élèves béninois de ${u.classe}. Sois encourageant, précis et concis (2-3 phrases). Réponds en français.`,
+      `L'élève ${u.nom} vient de ${correct?"réussir":"rater"} un exercice sur "${ex.titre}" en ${ex.matiere}. Difficultés connues : ${(u.diffs||[]).join(", ")||"aucune"}. Dis-lui quelle notion travailler ensuite et pourquoi.`
+    );
+    S.aiExercice=res||"Recommandation IA disponible avec la clé API configurée.";
+  } catch(e){
+    S.aiExercice="Recommandation IA disponible avec la clé API configurée.";
+  }
+  S.aiExLoading=false;
+  const box=document.getElementById("ai-ex-box");
+  if(box) box.innerHTML=`<div class="ai-box">${S.aiExercice}</div>`;
+}
+
+async function sendChat(){
+  const inp=document.getElementById("chat-inp");
+  const msg=inp?.value.trim();
+  if(!msg||S.chatLoading) return;
+  inp.value="";
+  S.chatMsgs.push({role:"user",content:msg});
+  S.chatLoading=true;
+  render();
+  const u=S.user;
+  const isPrimaire=PRIMAIRE.includes(u.classe);
+  try{
+    const res=await callIA(
+      `Tu es un assistant pédagogique bienveillant pour EduBénin IA, plateforme éducative béninoise. Tu aides les élèves de ${u.classe}. ${isPrimaire?"Cet élève est en primaire. Utilise des mots très simples, des phrases courtes, beaucoup d'encouragements et des exemples de la vie quotidienne.":"Réponds en français, de façon claire et adaptée au niveau "+u.classe+"."} Sois concis et donne des exemples concrets. Les difficultés de l'élève : ${(u.diffs||[]).join(", ")||"aucune particulière"}.`,
+      msg
+    );
+    S.chatMsgs.push({role:"ai",content:res||"Je suis là pour t'aider ! Peux-tu reformuler ta question ?"});
+  } catch(e){
+    S.chatMsgs.push({role:"ai",content:"Désolé, une erreur s'est produite. Réessaie dans un instant."});
+  }
+  S.chatLoading=false;
+  render();
+  const msgs=document.getElementById("chat-messages");
+  if(msgs) msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function generateContenuIA(){
+  const mat=document.getElementById("sh-matiere")?.value||"";
+  const classe=document.getElementById("sh-classe")?.value||"";
+  const titre=document.getElementById("sh-titre");
+  if(titre) titre.value="Génération en cours…";
+  try{
+    const res=await callIA(
+      "Tu es un assistant pour professeurs sur EduBénin IA. Génère un titre court (max 8 mots) pour un contenu pédagogique. Réponds UNIQUEMENT avec le titre, rien d'autre.",
+      `Génère un titre de contenu pédagogique en ${mat} pour une classe de ${classe}.`
+    );
+    if(titre) titre.value=(res||`Exercices ${mat} — ${classe}`).replace(/["\n]/g,"").trim();
+  } catch(e){
+    if(titre) titre.value=`Exercices ${mat} — ${classe}`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
