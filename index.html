@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EduBénin IA — Présentation du projet</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#00a86b;
+  --green-dark:#007a4d;
+  --green-light:#e6f9f1;
+  --yellow:#f5c518;
+  --red:#e63946;
+  --navy:#0a1628;
+  --navy2:#112240;
+  --text:#1a1a2e;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --white:#ffffff;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Sora',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 24px 80px;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, #0d3a2b 0%, var(--navy) 70%);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(0,168,107,.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(245,197,24,.07) 0%, transparent 40%);
+  pointer-events:none;
+}
+.dots{
+  position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
+}
+.flag-strip{
+  display:flex;gap:0;border-radius:4px;overflow:hidden;margin-bottom:32px;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+.flag-strip span{display:block;width:20px;height:5px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,168,107,.15);border:1px solid rgba(0,168,107,.3);
+  border-radius:100px;padding:6px 16px;font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:#4ade80;margin-bottom:24px;
+}
+.hero h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.4rem,7vw,5rem);
+  line-height:1.05;letter-spacing:-.02em;
+  margin-bottom:8px;
+}
+.hero h1 em{color:var(--green);font-style:italic}
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.25rem);color:rgba(255,255,255,.65);
+  font-weight:300;max-width:520px;margin:16px auto 0;line-height:1.7;
+}
+.hero-cta{
+  margin-top:48px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+}
+.btn-main{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--green);color:var(--white);
+  padding:14px 28px;border-radius:12px;font-weight:600;font-size:15px;
+  text-decoration:none;border:none;cursor:pointer;
+  box-shadow:0 8px 32px rgba(0,168,107,.35);
+  transition:all .25s;
+}
+.btn-main:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,168,107,.45)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;color:var(--white);
+  padding:13px 28px;border-radius:12px;font-weight:500;font-size:15px;
+  text-decoration:none;border:1.5px solid rgba(255,255,255,.2);cursor:pointer;
+  transition:all .25s;
+}
+.btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.4)}
+.scroll-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:.4;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  animation:bob 2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+.scroll-hint::after{content:'';display:block;width:1px;height:28px;background:currentColor}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  background:var(--navy2);border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:28px 24px;
+}
+.stats-inner{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px;
+  text-align:center;
+}
+.stat-num{font-size:2rem;font-weight:700;color:var(--green)}
+.stat-lab{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px;font-weight:400}
+
+/* ── SECTIONS ── */
+.section{padding:100px 24px;position:relative}
+.section-inner{max-width:880px;margin:0 auto}
+.section-num{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--green);margin-bottom:16px;
+  background:rgba(0,168,107,.1);padding:5px 12px;border-radius:100px;
+  border:1px solid rgba(0,168,107,.2);
+}
+.section h2{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(1.8rem,4vw,3rem);line-height:1.15;
+  margin-bottom:20px;
+}
+.section h2 em{color:var(--green);font-style:italic}
+.lead{
+  font-size:1.1rem;color:rgba(255,255,255,.7);line-height:1.8;
+  max-width:660px;font-weight:300;
+}
+
+/* ── CONTEXTE ── */
+#contexte{background:var(--navy)}
+.context-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px;
+}
+@media(max-width:640px){.context-grid{grid-template-columns:1fr}}
+.context-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:24px;
+  transition:border-color .25s,background .25s;
+}
+.context-card:hover{border-color:rgba(0,168,107,.3);background:rgba(0,168,107,.04)}
+.ctx-icon{font-size:28px;margin-bottom:12px}
+.ctx-val{font-size:1.6rem;font-weight:700;color:var(--yellow);margin-bottom:4px}
+.ctx-title{font-size:14px;font-weight:600;margin-bottom:6px}
+.ctx-body{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6}
+
+/* ── PROBLÉMATIQUE ── */
+#problematique{
+  background:linear-gradient(180deg, var(--navy) 0%, #140a0a 100%);
+}
+.prob-list{margin-top:48px;display:flex;flex-direction:column;gap:20px}
+.prob-item{
+  display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:start;
+  background:rgba(230,57,70,.05);border:1px solid rgba(230,57,70,.15);
+  border-radius:16px;padding:24px;
+  transition:border-color .3s;
+}
+.prob-item:hover{border-color:rgba(230,57,70,.35)}
+.prob-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(230,57,70,.12);
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+}
+.prob-title{font-size:15px;font-weight:600;margin-bottom:6px;color:#fca5a5}
+.prob-body{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7}
+.prob-data{
+  display:inline-block;margin-top:8px;
+  background:rgba(230,57,70,.15);border:1px solid rgba(230,57,70,.25);
+  border-radius:8px;padding:3px 10px;font-size:12px;color:#fca5a5;font-weight:500;
+}
+
+/* ── SOLUTION ── */
+#solution{
+  background:linear-gradient(180deg, #140a0a 0%, var(--navy) 50%, #0d3a2b 100%);
+}
+.sol-steps{margin-top:48px;display:flex;flex-direction:column;gap:0}
+.sol-step{
+  display:grid;grid-template-columns:64px 1fr;gap:24px;
+  padding:32px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:relative;
+}
+.sol-step:last-child{border-bottom:none}
+.step-left{display:flex;flex-direction:column;align-items:center;gap:0}
+.step-num{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--green);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:18px;flex-shrink:0;
+  box-shadow:0 4px 20px rgba(0,168,107,.4);
+}
+.step-line{flex:1;width:2px;background:linear-gradient(to bottom, var(--green), transparent);margin-top:8px;min-height:40px}
+.sol-step:last-child .step-line{display:none}
+.step-tag{
+  display:inline-block;margin-bottom:8px;
+  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--green);background:rgba(0,168,107,.1);
+  padding:3px 10px;border-radius:100px;border:1px solid rgba(0,168,107,.2);
+}
+.step-title{font-size:17px;font-weight:600;margin-bottom:10px}
+.step-body{font-size:13px;color:rgba(255,255,255,.6);line-height:1.75}
+.step-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{
+  background:rgba(0,168,107,.1);border:1px solid rgba(0,168,107,.2);
+  color:#86efac;border-radius:100px;padding:3px 11px;font-size:11px;font-weight:500;
+}
+
+/* ── DEMO CTA ── */
+.demo-section{
+  padding:80px 24px;text-align:center;
+  background:radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,168,107,.12) 0%, transparent 70%);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.demo-label{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--yellow);margin-bottom:16px;
+}
+.demo-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(1.6rem,4vw,2.8rem);margin-bottom:12px;
+}
+.demo-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:36px;line-height:1.6;max-width:480px;margin-left:auto;margin-right:auto}
+.btn-demo{
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--yellow);color:var(--navy);
+  padding:16px 36px;border-radius:14px;font-weight:700;font-size:16px;
+  text-decoration:none;
+  box-shadow:0 8px 40px rgba(245,197,24,.35);
+  transition:all .25s;border:none;cursor:pointer;
+}
+.btn-demo:hover{transform:translateY(-3px);box-shadow:0 14px 50px rgba(245,197,24,.45)}
+.btn-demo svg{width:20px;height:20px}
+
+/* ── FOOTER ── */
+footer{
+  padding:32px 24px;text-align:center;
+  font-size:12px;color:rgba(255,255,255,.25);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="dots"></div>
+  <div class="flag-strip">
+    <span style="background:#00a86b"></span>
+    <span style="background:#f5c518"></span>
+    <span style="background:#e63946"></span>
+  </div>
+  <div class="hero-badge">
+    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Innovation éducative · Bénin
+  </div>
+  <h1>EduBénin <em>IA</em><br/>La classe de demain,<br/>aujourd'hui.</h1>
+  <p class="hero-sub">Une plateforme intelligente qui personnalise l'enseignement pour chaque élève béninois, du CP à la Terminale, grâce à l'intelligence artificielle.</p>
+  <div class="hero-cta">
+    <a href="#contexte" class="btn-main">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+      Découvrir le projet
+    </a>
+    <a href="#demo" class="btn-outline">Voir la démo →</a>
+  </div>
+  <div class="scroll-hint">Défiler</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div><div class="stat-num">3,2M</div><div class="stat-lab">Élèves au Bénin</div></div>
+    <div><div class="stat-num">67%</div><div class="stat-lab">Taux d'abandon scolaire</div></div>
+    <div><div class="stat-num">1</div><div class="stat-lab">Prof pour 60+ élèves</div></div>
+    <div><div class="stat-num">13</div><div class="stat-lab">Niveaux scolaires couverts</div></div>
+  </div>
+</div>
+
+<!-- ① CONTEXTE -->
+<section class="section" id="contexte">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-num">① Contexte</span>
+      <h2>Un système éducatif <em>sous pression</em></h2>
+      <p class="lead">Le Bénin compte plus de 3,2 millions d'élèves répartis du CP à la Terminale. Le système fait face à des défis structurels profonds qui freinent la réussite de chaque élève.</p>
+    </div>
+    <div class="context-grid">
+      <div class="context-card reveal">
+        <div class="ctx-icon">📚</div>
+        <div class="ctx-val">1/60+</div>
+        <div class="ctx-title">Ratio professeur/élèves</div>
+        <div class="ctx-body">Dans les classes rurales, un seul professeur gère souvent plus de 60 élèves aux niveaux hétérogènes, rendant tout suivi individuel impossible.</div>
+      </div>
+      <div class="context-card reveal">
+        <div class="ctx-icon">⚠️</div>
+        <div class="ctx-val">67%</div>
+        <div class="ctx-title">Taux d'abandon avant le BAC</div>
+        <div class="ctx-body">Deux tiers des élèves qui entrent au CP ne terminent jamais le lycée. Les difficultés non détectées tôt s'accumulent jusqu'à décourager définitivement.</div>
+      </div>
+      <div class="context-card reveal">
+        <div class="ctx-icon">🌍</div>
+        <div class="ctx-val">Zones rurales</div>
+        <div class="ctx-title">Fracture géographique</div>
+        <div class="ctx-body">Les élèves des zones reculées n'ont pas accès aux mêmes ressources pédagogiques que ceux des grandes villes comme Cotonou ou Porto-Novo.</div>
+      </div>
+      <div class="context-card reveal">
+        <div class="ctx-icon">📱</div>
+        <div class="ctx-val">+18%/an</div>
+        <div class="ctx-title">Pénétration du mobile</div>
+        <div class="ctx-body">Le smartphone se démocratise rapidement même en zone rurale, créant une opportunité unique pour déployer des outils éducatifs numériques à grande échelle.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ② PROBLÉMATIQUE -->
+<section class="section" id="problematique">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-num">② Problématique</span>
+      <h2>Pourquoi les élèves <em>décrochent</em> ?</h2>
+      <p class="lead">Le décrochage scolaire n'est pas une fatalité. Il résulte de lacunes précises qui ne sont ni détectées ni comblées à temps, faute d'outils adaptés.</p>
+    </div>
+    <div class="prob-list">
+      <div class="prob-item reveal">
+        <div class="prob-icon">🔍</div>
+        <div>
+          <div class="prob-title">Difficultés invisibles, jamais détectées</div>
+          <div class="prob-body">Un élève de CE2 qui n'a pas compris les fractions en CE1 continuera à accumuler des lacunes en silence. Sans diagnostic personnalisé, le professeur ne sait pas où intervenir. Les lacunes se cristallisent et deviennent des blocages durables.</div>
+          <span class="prob-data">→ Des années de lacunes non traitées</span>
+        </div>
+      </div>
+      <div class="prob-item reveal">
+        <div class="prob-icon">👨‍🏫</div>
+        <div>
+          <div class="prob-title">Le professeur ne peut pas tout faire seul</div>
+          <div class="prob-body">Face à 60 élèves, différencier la pédagogie est humainement impossible. Tous reçoivent le même cours, au même rythme, peu importe leur niveau réel. Les plus faibles restent à la traîne, les plus forts s'ennuient.</div>
+          <span class="prob-data">→ Enseignement uniforme pour des profils hétérogènes</span>
+        </div>
+      </div>
+      <div class="prob-item reveal">
+        <div class="prob-icon">💔</div>
+        <div>
+          <div class="prob-title">Aucun soutien entre les cours</div>
+          <div class="prob-body">L'élève rentre chez lui avec ses devoirs, ses questions sans réponse, et personne pour l'aider. Les familles, souvent peu scolarisées, ne peuvent pas compenser. Ce vide crée de l'anxiété scolaire et du découragement.</div>
+          <span class="prob-data">→ L'élève est seul face à ses incompréhensions</span>
+        </div>
+      </div>
+      <div class="prob-item reveal">
+        <div class="prob-icon">📊</div>
+        <div>
+          <div class="prob-title">Le professeur navigue à l'aveugle</div>
+          <div class="prob-body">Sans données fiables sur la progression de chaque élève, impossible de savoir qui prendre en charge en priorité, quels exercices proposer, ou comment adapter le prochain cours. L'enseignant réagit au problème quand il est déjà trop tard.</div>
+          <span class="prob-data">→ Pas de tableau de bord pédagogique</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ SOLUTION -->
+<section class="section" id="solution">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-num">③ Solution</span>
+      <h2>EduBénin IA : <em>un assistant pédagogique</em><br/>pour chaque élève</h2>
+      <p class="lead">Une plateforme web alimentée par l'IA Claude d'Anthropic, conçue spécifiquement pour le contexte béninois, accessible du CP à la Terminale sur smartphone.</p>
+    </div>
+    <div class="sol-steps">
+      <div class="sol-step reveal">
+        <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div>
+          <span class="step-tag">Diagnostic continu</span>
+          <div class="step-title">L'IA détecte les lacunes en temps réel</div>
+          <div class="step-body">À chaque exercice complété, l'IA analyse les erreurs et met à jour le profil de l'élève. Elle identifie les notions non maîtrisées, même celles héritées des années précédentes. Le rapport est immédiatement visible par le professeur et l'élève — sans attendre les examens.</div>
+          <div class="step-chips">
+            <span class="chip">Analyse des erreurs</span>
+            <span class="chip">Profil par matière</span>
+            <span class="chip">Alertes précoces</span>
+          </div>
+        </div>
+      </div>
+      <div class="sol-step reveal">
+        <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div>
+          <span class="step-tag">Apprentissage personnalisé</span>
+          <div class="step-title">Des exercices et explications adaptés à chaque niveau</div>
+          <div class="step-body">Que l'élève soit en CP ou en Terminale, l'IA génère des exercices calibrés à son niveau réel, pas à son niveau théorique. Un élève de 3ème qui a des lacunes en primaire peut être aidé sans stigmatisation. L'assistant conversationnel répond à toutes les questions en français, 24h/24, avec des exemples concrets.</div>
+          <div class="step-chips">
+            <span class="chip">CP → Terminale</span>
+            <span class="chip">Exercices sur mesure</span>
+            <span class="chip">Chat IA 24h/24</span>
+            <span class="chip">Explication progressive</span>
+          </div>
+        </div>
+      </div>
+      <div class="sol-step reveal">
+        <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div>
+          <span class="step-tag">Tableau de bord enseignant</span>
+          <div class="step-title">Le professeur pilote sa classe avec des données</div>
+          <div class="step-body">Le professeur dispose d'une vue complète sur chaque élève : difficultés détectées, progression hebdomadaire, exercices réalisés. Il peut générer des contenus pédagogiques ciblés avec l'IA et les partager en un clic à toute la classe ou aux élèves en difficulté. Plus besoin de naviguer à l'aveugle.</div>
+          <div class="step-chips">
+            <span class="chip">Tableau de bord classe</span>
+            <span class="chip">Génération IA de cours</span>
+            <span class="chip">Partage de contenus</span>
+            <span class="chip">Suivi individuel</span>
+          </div>
+        </div>
+      </div>
+      <div class="sol-step reveal">
+        <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div>
+          <span class="step-tag">Accessibilité universelle</span>
+          <div class="step-title">Conçu pour fonctionner partout au Bénin</div>
+          <div class="step-body">Interface légère optimisée pour les smartphones d'entrée de gamme et les connexions lentes. Conçue pour être intuitive pour un élève de CP avec des icônes simples, tout en étant puissante pour un lycéen de Terminale. Une même plateforme pour tous les niveaux, sans friction.</div>
+          <div class="step-chips">
+            <span class="chip">Interface mobile-first</span>
+            <span class="chip">Léger et rapide</span>
+            <span class="chip">CP inclus</span>
+            <span class="chip">Connexion bas débit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO CTA -->
+<section class="demo-section" id="demo">
+  <div class="demo-label">✦ Démo interactive disponible</div>
+  <div class="demo-title">Envie de voir l'application<br/>en action ?</div>
+  <p class="demo-sub">Connectez-vous en tant qu'élève ou professeur et explorez toutes les fonctionnalités — exercices IA, assistant conversationnel, tableau de bord.</p>
+  <a href="https://roneloussou1-design.github.io/edubenin-ia/demo.html" target="_blank" class="btn-demo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Lancer la démo v0
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>EduBénin IA · Projet de transformation éducative · République du Bénin</p>
+  <p style="margin-top:6px;font-size:11px">Conçu pour les élèves du CP à la Terminale</p>
+</footer>
+
+<script>
+// Reveal on scroll
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
