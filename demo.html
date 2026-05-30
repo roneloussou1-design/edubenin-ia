@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EduBénin IA — Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+/* ── BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1643a3;--blue-mid:#2255c4;--sky:#deeafb;--navy:#0c1f4a;
+  --green:#1a8c5b;--green-lt:#e0f5ec;
+  --amber:#d97706;--amber-lt:#fef3c7;
+  --red:#c0392b;--red-lt:#fce8e8;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --bg:#f1f5f9;--bg2:#f8fafc;--white:#fff;
+  --radius:10px;--radius-lg:14px;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+input,select,textarea,button{font-family:inherit;font-size:14px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--white);color:var(--text);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:72px}
+button{cursor:pointer;border:none;border-radius:var(--radius);transition:all .15s}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;background:var(--white);border:1px solid var(--border2);color:var(--text);font-weight:500}
+.btn:hover{background:var(--bg)}
+.btn-primary{background:var(--blue);color:var(--white);border:none;font-weight:600}
+.btn-primary:hover{background:var(--blue-mid)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff;border:none}
+.btn-danger:hover{background:#a93226}
+.btn-ghost{background:transparent;border:none;color:var(--blue);padding:4px 6px;font-weight:500}
+.btn-ghost:hover{background:var(--sky);border-radius:6px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-ok{background:var(--green-lt);color:var(--green)}
+.badge-warn{background:var(--amber-lt);color:var(--amber)}
+.badge-danger{background:var(--red-lt);color:var(--red)}
+.badge-blue{background:var(--sky);color:var(--blue)}
+.badge-gray{background:#f1f5f9;color:var(--text2)}
+.tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;background:var(--sky);color:var(--blue);margin:2px}
+
+/* ── LAYOUT ── */
+.app{min-height:100vh;display:flex;flex-direction:column}
+
+/* ── AUTH ── */
+.auth-bg{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(135deg,var(--navy) 0%,#1a3a8f 50%,var(--navy) 100%);
+  position:relative;overflow:hidden;
+}
+.auth-bg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 30% 50%,rgba(30,90,220,.18) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 40% at 80% 30%,rgba(26,140,91,.12) 0%,transparent 60%);
+}
+.auth-card{
+  background:var(--white);border-radius:20px;padding:36px 32px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.2);
+  position:relative;z-index:1;
+}
+.auth-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:8px}
+.auth-logo-icon{width:44px;height:44px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px}
+.auth-logo-text{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--navy)}
+.auth-title{font-size:17px;font-weight:600;color:var(--text);text-align:center;margin-bottom:4px}
+.auth-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:20px}
+.role-tabs{display:flex;gap:4px;background:var(--bg);padding:3px;border-radius:10px;margin-bottom:18px}
+.rtab{flex:1;padding:7px 4px;text-align:center;font-size:12px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--text2);border:none;background:transparent;transition:all .15s}
+.rtab.active{background:var(--white);color:var(--blue);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.pw-wrap{position:relative;display:flex;align-items:center}
+.pw-wrap input{flex:1;padding-right:40px}
+.pw-eye{position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;line-height:1;font-size:16px;display:flex;align-items:center}
+.pw-eye:hover{color:var(--blue)}
+.auth-link{background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer;display:block;text-align:center;margin-top:12px;text-decoration:underline;text-underline-offset:2px}
+.auth-link:hover{color:var(--navy)}
+.err-msg{background:var(--red-lt);color:var(--red);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+.ok-msg{background:var(--green-lt);color:var(--green);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tlogo{font-family:'Fraunces',serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.tright{display:flex;align-items:center;gap:10px}
+.tuser{font-size:13px;opacity:.85;display:flex;align-items:center;gap:6px}
+.tbadge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600}
+.tbtn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;font-size:12px;border-radius:8px}
+.tbtn-logout:hover{background:rgba(255,255,255,.18)}
+
+/* ── NAV TABS ── */
+.nav{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0}
+.ntab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+.ntab:hover{color:var(--blue)}
+.ntab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+
+/* ── PAGE ── */
+.page-wrap{flex:1;overflow-y:auto;padding:20px;max-width:960px;margin:0 auto;width:100%}
+
+/* ── CARDS ── */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.metric{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;text-align:center;box-shadow:var(--shadow)}
+.metric-val{font-size:26px;font-weight:700;color:var(--blue);font-family:'Fraunces',serif}
+.metric-lab{font-size:11px;color:var(--text3);margin-top:3px;font-weight:500}
+
+/* ── ROW ── */
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue);flex-shrink:0}
+
+/* ── PROGRESS BAR ── */
+.bar-bg{background:var(--bg);border-radius:4px;height:7px;overflow:hidden;width:90px}
+.bar-fill{height:7px;border-radius:4px;transition:width .4s}
+
+/* ── AI BOX ── */
+.ai-box{background:linear-gradient(135deg,#eef4ff 0%,#e8f8f3 100%);border-left:3px solid var(--blue);border-radius:var(--radius);padding:13px 15px;font-size:13px;line-height:1.7;color:#0c2556;margin-bottom:12px}
+.ai-box.loading{background:var(--bg2);border-left-color:var(--border2);color:var(--text3);font-style:italic}
+
+/* ── CHOICE ── */
+.choice-opt{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--radius);border:1px solid var(--border2);margin-bottom:6px;cursor:pointer;font-size:13px;transition:all .15s}
+.choice-opt:hover{background:var(--bg);border-color:var(--blue-mid)}
+.choice-opt.correct{background:var(--green-lt);border-color:var(--green);color:var(--green);font-weight:500}
+.choice-opt.wrong{background:var(--red-lt);border-color:var(--red);color:var(--red)}
+
+/* ── CHAT ── */
+.chat-msg{padding:9px 13px;border-radius:var(--radius);font-size:13px;line-height:1.6;margin-bottom:8px;max-width:88%}
+.chat-user{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:3px}
+.chat-ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
+.chat-row{display:flex;gap:8px;margin-top:12px}
+.chat-row input{flex:1;border-radius:20px;padding:9px 14px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(12,31,74,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal-box{background:var(--white);border-radius:18px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* ── SPINNER ── */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SECTION SELECT (promo filter) ── */
+.promo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pf-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--white);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.pf-btn:hover{border-color:var(--blue);color:var(--blue)}
+.pf-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── NIVEAUX GRID ── */
+.niv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:5px}
+.niv-btn{padding:6px 4px;font-size:11px;border:1px solid var(--border2);border-radius:8px;background:var(--white);cursor:pointer;color:var(--text2);text-align:center;transition:all .15s;font-family:inherit;font-weight:500}
+.niv-btn:hover{border-color:var(--blue);color:var(--blue)}
+.niv-btn.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── MATIÈRES CUSTOM ── */
+.mat-chip{display:inline-flex;align-items:center;gap:5px;background:var(--sky);color:var(--blue);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;margin:3px}
+.mat-chip .rm{cursor:pointer;color:var(--blue);opacity:.6;font-size:14px;line-height:1}
+.mat-chip .rm:hover{opacity:1}
+</style>
+</head>
+<body>
+<div class="app" id="root"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CONSTANTES & DB
+// ══════════════════════════════════════════════════════════
+const SECTIONS_COLLEGE = ["A","B","C","D","E"];
+const SECTIONS_LYCEE   = ["A","B","C","D"]; // pas de E au lycée
+const PRIMAIRE    = ["CP","CE1","CE2","CM1","CM2"];
+const COLLEGE_BASE = ["6ème","5ème","4ème","3ème"];
+const LYCEE_BASE   = ["2nde","1ère","Terminale"];
+// Collège : sections A→E ; Lycée : sections A→D
+const COLLEGE = COLLEGE_BASE.flatMap(n=>SECTIONS_COLLEGE.map(s=>`${n} ${s}`));
+const LYCEE   = LYCEE_BASE.flatMap(n=>SECTIONS_LYCEE.map(s=>`${n} ${s}`));
+const NIVEAUX = [...PRIMAIRE, ...COLLEGE, ...LYCEE];
+
+// Séries lycée : A & B = littéraires, C & D = scientifiques
+const LYCEE_LITT = ["A","B"];
+const LYCEE_SCI  = ["C","D"];
+function getSection(n){ return n.includes(" ") ? n.split(" ").pop() : null; }
+function isLyceeScientifique(n){ return LYCEE_BASE.some(b=>n.startsWith(b+" ")) && LYCEE_SCI.includes(getSection(n)); }
+function isLyceeLitteraire(n){  return LYCEE_BASE.some(b=>n.startsWith(b+" ")) && LYCEE_LITT.includes(getSection(n)); }
+function getSerieLabel(n){
+  if(!LYCEE_BASE.some(b=>n.startsWith(b+" "))) return "";
+  return LYCEE_SCI.includes(getSection(n)) ? "Série scientifique" : "Série littéraire";
+}
+
+// Obtenir le niveau de base (sans section) ex: "3ème A" -> "3ème"
+function getNiveauBase(n){
+  for(const b of [...COLLEGE_BASE,...LYCEE_BASE]){
+    if(n===b||n.startsWith(b+" ")) return b;
+  }
+  return n;
+}
+// Obtenir toutes les sections d'un niveau de base
+function getSections(niveauBase){
+  return NIVEAUX.filter(n=>n===niveauBase||n.startsWith(niveauBase+" "));
+}
+
+// Matières par défaut selon le cycle et la série
+const MATIERES_BASE = {
+  primaire:      ["Expression écrite","Lecture","Education Sociale","Education Scientifique et Technologique","Mathématiques","Dessin"],
+  college:       ["Communication écrite","Lecture","Mathématiques","SVT","PCT","Anglais","Histoire-Géo"],
+  quatrieme:     ["Communication écrite","Lecture","Mathématiques","SVT","PCT","Anglais","Histoire-Géo","Allemand ou Espagnol"],
+  lycee_litt:    ["Communication écrite","Littérature","Philosophie","Histoire-Géo","Anglais","Allemand ou Espagnol","Mathématiques","Economie"],
+  lycee_sci:     ["Mathématiques","SVT","PCT","Physique-Chimie","Anglais","Communication écrite","Histoire-Géo","Philosophie"],
+};
+
+function getMatieresByNiveau(n){
+  const base = getNiveauBase(n);
+  if(PRIMAIRE.includes(n))         return [...MATIERES_BASE.primaire];
+  if(base==="4ème")                return [...MATIERES_BASE.quatrieme];
+  if(COLLEGE_BASE.includes(base))  return [...MATIERES_BASE.college];
+  // Lycée : selon série
+  if(isLyceeScientifique(n))       return [...MATIERES_BASE.lycee_sci];
+  if(isLyceeLitteraire(n))         return [...MATIERES_BASE.lycee_litt];
+  return [...MATIERES_BASE.lycee_sci]; // fallback
+}
+
+const DEFAULT_DB = {
+  messages:[], // {id, de, deNom, a, aNom, sujet, corps, date, lu}
+  users:[
+    // Secrétaire prédéfinie
+    {id:"admin@edubenin.bj",nom:"Mme Adjoua Kossou",role:"secretaire",mdp:"1234"},
+    // Prof prédéfini avec classes (sections)
+    {id:"prof.gbedji@edubenin.bj",nom:"Prof. Martin Gbèdji",role:"prof",mdp:"1234",classes:["3ème A","Terminale A"]},
+    {id:"prof.houngbo@edubenin.bj",nom:"Prof. Clarisse Houngbo",role:"prof",mdp:"1234",classes:["3ème B","3ème C","6ème A"]},
+    // Élèves pré-inscrits
+    {id:"aicha.dossou@edubenin.bj",nom:"Aïcha Dossou",role:"eleve",classe:"3ème A",mdp:"1234",
+     score:72,matieres:{"Communication écrite":78,"Lecture":80,"Mathématiques":65,"SVT":70,"PCT":58,"Anglais":75,"Histoire-Géo":72},
+     diffs:["PCT"],exercices:14,progression:5,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Communication écrite":60,"Lecture":62,"Mathématiques":48,"SVT":55,"PCT":40,"Anglais":58,"Histoire-Géo":55}},
+       {semaine:"S2",scores:{"Communication écrite":65,"Lecture":68,"Mathématiques":52,"SVT":60,"PCT":44,"Anglais":63,"Histoire-Géo":60}},
+       {semaine:"S3",scores:{"Communication écrite":70,"Lecture":74,"Mathématiques":58,"SVT":65,"PCT":50,"Anglais":68,"Histoire-Géo":66}},
+       {semaine:"S4",scores:{"Communication écrite":78,"Lecture":80,"Mathématiques":65,"SVT":70,"PCT":58,"Anglais":75,"Histoire-Géo":72}},
+     ]},
+    {id:"kofi.agbodji@edubenin.bj",nom:"Kofi Agbodji",role:"eleve",classe:"3ème A",mdp:"1234",
+     score:45,matieres:{"Communication écrite":50,"Lecture":55,"Mathématiques":30,"SVT":45,"PCT":38,"Anglais":42,"Histoire-Géo":55},
+     diffs:["Mathématiques","PCT","Algèbre"],exercices:8,progression:-2,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Communication écrite":55,"Lecture":60,"Mathématiques":42,"SVT":50,"PCT":45,"Anglais":50,"Histoire-Géo":58}},
+       {semaine:"S2",scores:{"Communication écrite":52,"Lecture":57,"Mathématiques":38,"SVT":48,"PCT":42,"Anglais":46,"Histoire-Géo":57}},
+       {semaine:"S3",scores:{"Communication écrite":50,"Lecture":56,"Mathématiques":34,"SVT":46,"PCT":40,"Anglais":44,"Histoire-Géo":56}},
+       {semaine:"S4",scores:{"Communication écrite":50,"Lecture":55,"Mathématiques":30,"SVT":45,"PCT":38,"Anglais":42,"Histoire-Géo":55}},
+     ]},
+    {id:"seun.adeyemi@edubenin.bj",nom:"Seun Adeyemi",role:"eleve",classe:"3ème B",mdp:"1234",
+     score:61,matieres:{"Communication écrite":68,"Lecture":72,"Mathématiques":48,"SVT":62,"PCT":55,"Anglais":65,"Histoire-Géo":58},
+     diffs:["Algèbre","Mathématiques"],exercices:11,progression:3,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Communication écrite":55,"Lecture":60,"Mathématiques":35,"SVT":50,"PCT":45,"Anglais":52,"Histoire-Géo":48}},
+       {semaine:"S2",scores:{"Communication écrite":60,"Lecture":64,"Mathématiques":40,"SVT":55,"PCT":48,"Anglais":57,"Histoire-Géo":52}},
+       {semaine:"S3",scores:{"Communication écrite":64,"Lecture":68,"Mathématiques":44,"SVT":58,"PCT":52,"Anglais":61,"Histoire-Géo":55}},
+       {semaine:"S4",scores:{"Communication écrite":68,"Lecture":72,"Mathématiques":48,"SVT":62,"PCT":55,"Anglais":65,"Histoire-Géo":58}},
+     ]},
+    {id:"fatou.zinsou@edubenin.bj",nom:"Fatou Zinsou",role:"eleve",classe:"Terminale A",mdp:"1234",
+     score:81,matieres:{"Communication écrite":85,"Littérature":88,"Philosophie":80,"Histoire-Géo":78,"Anglais":82,"Allemand ou Espagnol":75,"Mathématiques":80,"Economie":80},
+     diffs:[],exercices:20,progression:7,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Communication écrite":70,"Littérature":74,"Philosophie":65,"Histoire-Géo":64,"Anglais":68,"Allemand ou Espagnol":60,"Mathématiques":65,"Economie":66}},
+       {semaine:"S2",scores:{"Communication écrite":75,"Littérature":78,"Philosophie":70,"Histoire-Géo":68,"Anglais":72,"Allemand ou Espagnol":65,"Mathématiques":70,"Economie":70}},
+       {semaine:"S3",scores:{"Communication écrite":80,"Littérature":84,"Philosophie":75,"Histoire-Géo":73,"Anglais":77,"Allemand ou Espagnol":70,"Mathématiques":75,"Economie":75}},
+       {semaine:"S4",scores:{"Communication écrite":85,"Littérature":88,"Philosophie":80,"Histoire-Géo":78,"Anglais":82,"Allemand ou Espagnol":75,"Mathématiques":80,"Economie":80}},
+     ]},
+    {id:"yemi.adegoke@edubenin.bj",nom:"Yemi Adégoke",role:"eleve",classe:"Terminale C",mdp:"1234",
+     score:55,matieres:{"Mathématiques":52,"SVT":60,"PCT":48,"Physique-Chimie":45,"Anglais":62,"Communication écrite":58,"Histoire-Géo":60,"Philosophie":55},
+     diffs:["Physique-Chimie","PCT"],exercices:9,progression:1,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Mathématiques":48,"SVT":55,"PCT":42,"Physique-Chimie":38,"Anglais":55,"Communication écrite":50,"Histoire-Géo":54,"Philosophie":48}},
+       {semaine:"S2",scores:{"Mathématiques":49,"SVT":57,"PCT":44,"Physique-Chimie":40,"Anglais":57,"Communication écrite":53,"Histoire-Géo":56,"Philosophie":50}},
+       {semaine:"S3",scores:{"Mathématiques":51,"SVT":58,"PCT":46,"Physique-Chimie":43,"Anglais":60,"Communication écrite":56,"Histoire-Géo":58,"Philosophie":52}},
+       {semaine:"S4",scores:{"Mathématiques":52,"SVT":60,"PCT":48,"Physique-Chimie":45,"Anglais":62,"Communication écrite":58,"Histoire-Géo":60,"Philosophie":55}},
+     ]},
+    {id:"amara.hounsou@edubenin.bj",nom:"Amara Hounsou",role:"eleve",classe:"CP",mdp:"1234",
+     score:68,matieres:{"Expression écrite":65,"Lecture":72,"Education Sociale":70,"Education Scientifique et Technologique":60,"Mathématiques":68,"Dessin":75},
+     diffs:["Education Scientifique et Technologique"],exercices:6,progression:4,inscritPar:"secretaire",
+     historique:[
+       {semaine:"S1",scores:{"Expression écrite":50,"Lecture":55,"Education Sociale":55,"Education Scientifique et Technologique":45,"Mathématiques":52,"Dessin":60}},
+       {semaine:"S2",scores:{"Expression écrite":55,"Lecture":60,"Education Sociale":60,"Education Scientifique et Technologique":48,"Mathématiques":57,"Dessin":65}},
+       {semaine:"S3",scores:{"Expression écrite":60,"Lecture":66,"Education Sociale":65,"Education Scientifique et Technologique":54,"Mathématiques":62,"Dessin":70}},
+       {semaine:"S4",scores:{"Expression écrite":65,"Lecture":72,"Education Sociale":70,"Education Scientifique et Technologique":60,"Mathématiques":68,"Dessin":75}},
+     ]},
+  ],
+  contenus:[
+    {id:"c1",titre:"Révision équations — exercices niveau 2",matiere:"Mathématiques",classe:"3ème A",dest:"Élèves en difficulté",date:"22 mai",auteur:"Prof. Martin Gbèdji"},
+    {id:"c2",titre:"Dictée : La savane africaine",matiere:"Communication écrite",classe:"3ème A",dest:"Toute la classe",date:"20 mai",auteur:"Prof. Martin Gbèdji"},
+  ],
+  // Matières personnalisées ajoutées par l'école, par niveau
+  matieresCustom:{},
+  // Annales par matière et par niveau de base
+  annales:{
+    // ── PRIMAIRE ──
+    "CP":{
+      "Lecture":[
+        {id:"aCP1",titre:"Composition de fin d'année 2023 — Lecture",annee:"2023",type:"Composition",fichier:null,description:"Épreuve de lecture et compréhension de texte, fin de CP 2023."},
+        {id:"aCP2",titre:"Composition de fin d'année 2022 — Lecture",annee:"2022",type:"Composition",fichier:null,description:"Épreuve de lecture CP 2022."},
+      ],
+      "Mathématiques":[
+        {id:"aCP3",titre:"Composition de fin d'année 2023 — Mathématiques",annee:"2023",type:"Composition",fichier:null,description:"Numération, calcul et résolution de problèmes CP 2023."},
+      ],
+      "Expression écrite":[
+        {id:"aCP4",titre:"Composition de fin d'année 2023 — Expression écrite",annee:"2023",type:"Composition",fichier:null,description:"Dictée et exercices de langue CP 2023."},
+      ],
+    },
+    "CE1":{
+      "Lecture":[
+        {id:"aCE1_1",titre:"Composition fin d'année 2023 — Lecture CE1",annee:"2023",type:"Composition",fichier:null,description:"Compréhension de texte et vocabulaire CE1 2023."},
+      ],
+      "Mathématiques":[
+        {id:"aCE1_2",titre:"Composition fin d'année 2023 — Mathématiques CE1",annee:"2023",type:"Composition",fichier:null,description:"Opérations, mesures et problèmes CE1 2023."},
+        {id:"aCE1_3",titre:"Composition fin d'année 2022 — Mathématiques CE1",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques CE1 2022."},
+      ],
+    },
+    "CE2":{
+      "Mathématiques":[
+        {id:"aCE2_1",titre:"Composition fin d'année 2023 — Mathématiques CE2",annee:"2023",type:"Composition",fichier:null,description:"Fractions, géométrie et problèmes CE2 2023."},
+      ],
+      "Expression écrite":[
+        {id:"aCE2_2",titre:"Composition fin d'année 2023 — Expression écrite CE2",annee:"2023",type:"Composition",fichier:null,description:"Rédaction et dictée CE2 2023."},
+      ],
+    },
+    "CM1":{
+      "Mathématiques":[
+        {id:"aCM1_1",titre:"Composition fin d'année 2023 — Mathématiques CM1",annee:"2023",type:"Composition",fichier:null,description:"Calcul, problèmes et géométrie CM1 2023."},
+        {id:"aCM1_2",titre:"Composition fin d'année 2022 — Mathématiques CM1",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques CM1 2022."},
+      ],
+      "Expression écrite":[
+        {id:"aCM1_3",titre:"Composition fin d'année 2023 — Expression écrite CM1",annee:"2023",type:"Composition",fichier:null,description:"Rédaction, grammaire et dictée CM1 2023."},
+      ],
+    },
+    "CM2":{
+      "Mathématiques":[
+        {id:"aCM2_1",titre:"CEPD 2023 — Mathématiques",annee:"2023",type:"CEPD",fichier:null,description:"Épreuve officielle du Certificat d'Études Primaires du Dahomey 2023."},
+        {id:"aCM2_2",titre:"CEPD 2022 — Mathématiques",annee:"2022",type:"CEPD",fichier:null,description:"CEPD Mathématiques 2022."},
+        {id:"aCM2_3",titre:"CEPD 2021 — Mathématiques",annee:"2021",type:"CEPD",fichier:null,description:"CEPD Mathématiques 2021."},
+      ],
+      "Expression écrite":[
+        {id:"aCM2_4",titre:"CEPD 2023 — Expression écrite",annee:"2023",type:"CEPD",fichier:null,description:"Épreuve de français et dictée CEPD 2023."},
+        {id:"aCM2_5",titre:"CEPD 2022 — Expression écrite",annee:"2022",type:"CEPD",fichier:null,description:"Expression écrite CEPD 2022."},
+      ],
+      "Lecture":[
+        {id:"aCM2_6",titre:"CEPD 2023 — Lecture",annee:"2023",type:"CEPD",fichier:null,description:"Compréhension de texte et vocabulaire CEPD 2023."},
+      ],
+    },
+    // ── COLLÈGE ──
+    "6ème":{
+      "Mathématiques":[
+        {id:"a6e_1",titre:"Composition semestrielle 2023 — Mathématiques 6ème",annee:"2023",type:"Composition",fichier:null,description:"Numération, calcul et géométrie en 6ème, semestre 2, 2023."},
+        {id:"a6e_2",titre:"Composition semestrielle 2022 — Mathématiques 6ème",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques 6ème 2022."},
+      ],
+      "Communication écrite":[
+        {id:"a6e_3",titre:"Composition semestrielle 2023 — Français 6ème",annee:"2023",type:"Composition",fichier:null,description:"Rédaction et grammaire 6ème 2023."},
+      ],
+      "SVT":[
+        {id:"a6e_4",titre:"Composition semestrielle 2023 — SVT 6ème",annee:"2023",type:"Composition",fichier:null,description:"Sciences de la vie et de la terre 6ème 2023."},
+      ],
+    },
+    "5ème":{
+      "Mathématiques":[
+        {id:"a5e_1",titre:"Composition semestrielle 2023 — Mathématiques 5ème",annee:"2023",type:"Composition",fichier:null,description:"Algèbre, géométrie et proportionnalité 5ème 2023."},
+        {id:"a5e_2",titre:"Composition semestrielle 2022 — Mathématiques 5ème",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques 5ème 2022."},
+      ],
+      "Communication écrite":[
+        {id:"a5e_3",titre:"Composition semestrielle 2023 — Français 5ème",annee:"2023",type:"Composition",fichier:null,description:"Production écrite et étude de la langue 5ème 2023."},
+      ],
+      "Histoire-Géo":[
+        {id:"a5e_4",titre:"Composition semestrielle 2023 — Histoire-Géo 5ème",annee:"2023",type:"Composition",fichier:null,description:"Histoire et géographie 5ème 2023."},
+      ],
+    },
+    "4ème":{
+      "Mathématiques":[
+        {id:"a4e_1",titre:"Composition semestrielle 2023 — Mathématiques 4ème",annee:"2023",type:"Composition",fichier:null,description:"Équations, statistiques et géométrie 4ème 2023."},
+        {id:"a4e_2",titre:"Composition semestrielle 2022 — Mathématiques 4ème",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques 4ème 2022."},
+      ],
+      "Communication écrite":[
+        {id:"a4e_3",titre:"Composition semestrielle 2023 — Français 4ème",annee:"2023",type:"Composition",fichier:null,description:"Dissertation et commentaire de texte 4ème 2023."},
+      ],
+      "Anglais":[
+        {id:"a4e_4",titre:"Composition semestrielle 2023 — Anglais 4ème",annee:"2023",type:"Composition",fichier:null,description:"Compréhension écrite et expression en anglais 4ème 2023."},
+      ],
+    },
+    "3ème":{
+      "Mathématiques":[
+        {id:"a1",titre:"Épreuve BEPC 2023 — Mathématiques",annee:"2023",type:"BEPC",fichier:null,description:"Sujet officiel du BEPC 2023, épreuves de mathématiques avec corrigé."},
+        {id:"a2",titre:"Épreuve BEPC 2022 — Mathématiques",annee:"2022",type:"BEPC",fichier:null,description:"Sujet officiel du BEPC 2022."},
+        {id:"a3e_m3",titre:"Épreuve BEPC 2021 — Mathématiques",annee:"2021",type:"BEPC",fichier:null,description:"BEPC Mathématiques 2021."},
+      ],
+      "Communication écrite":[
+        {id:"a3",titre:"Épreuve BEPC 2023 — Français",annee:"2023",type:"BEPC",fichier:null,description:"Composition française et dictée BEPC 2023."},
+        {id:"a3e_f2",titre:"Épreuve BEPC 2022 — Français",annee:"2022",type:"BEPC",fichier:null,description:"Français BEPC 2022."},
+      ],
+      "SVT":[
+        {id:"a3e_svt1",titre:"Épreuve BEPC 2023 — SVT",annee:"2023",type:"BEPC",fichier:null,description:"Sciences de la vie et de la terre BEPC 2023."},
+        {id:"a3e_svt2",titre:"Épreuve BEPC 2022 — SVT",annee:"2022",type:"BEPC",fichier:null,description:"SVT BEPC 2022."},
+      ],
+      "PCT":[
+        {id:"a3e_pct1",titre:"Épreuve BEPC 2023 — PCT",annee:"2023",type:"BEPC",fichier:null,description:"Physique-Chimie-Technologie BEPC 2023."},
+      ],
+      "Anglais":[
+        {id:"a3e_ang1",titre:"Épreuve BEPC 2023 — Anglais",annee:"2023",type:"BEPC",fichier:null,description:"Compréhension écrite et expression en anglais BEPC 2023."},
+        {id:"a3e_ang2",titre:"Épreuve BEPC 2022 — Anglais",annee:"2022",type:"BEPC",fichier:null,description:"Anglais BEPC 2022."},
+      ],
+      "Histoire-Géo":[
+        {id:"a3e_hg1",titre:"Épreuve BEPC 2023 — Histoire-Géo",annee:"2023",type:"BEPC",fichier:null,description:"Histoire et géographie BEPC 2023."},
+      ],
+    },
+    // ── LYCÉE ──
+    "2nde":{
+      "Mathématiques":[
+        {id:"a2nd_m1",titre:"Composition semestrielle 2023 — Mathématiques 2nde",annee:"2023",type:"Composition",fichier:null,description:"Fonctions, statistiques et géométrie 2nde 2023."},
+        {id:"a2nd_m2",titre:"Composition semestrielle 2022 — Mathématiques 2nde",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques 2nde 2022."},
+      ],
+      "Communication écrite":[
+        {id:"a2nd_f1",titre:"Composition semestrielle 2023 — Français 2nde",annee:"2023",type:"Composition",fichier:null,description:"Dissertation et commentaire littéraire 2nde 2023."},
+      ],
+      "SVT":[
+        {id:"a2nd_svt1",titre:"Composition semestrielle 2023 — SVT 2nde",annee:"2023",type:"Composition",fichier:null,description:"Sciences de la vie et de la terre 2nde 2023."},
+      ],
+      "Histoire-Géo":[
+        {id:"a2nd_hg1",titre:"Composition semestrielle 2023 — Histoire-Géo 2nde",annee:"2023",type:"Composition",fichier:null,description:"Histoire et géographie 2nde 2023."},
+      ],
+      "Anglais":[
+        {id:"a2nd_ang1",titre:"Composition semestrielle 2023 — Anglais 2nde",annee:"2023",type:"Composition",fichier:null,description:"Anglais 2nde 2023."},
+      ],
+    },
+    "1ère":{
+      "Mathématiques":[
+        {id:"a1er_m1",titre:"Composition semestrielle 2023 — Mathématiques 1ère",annee:"2023",type:"Composition",fichier:null,description:"Dérivées, suites et probabilités 1ère 2023."},
+        {id:"a1er_m2",titre:"Composition semestrielle 2022 — Mathématiques 1ère",annee:"2022",type:"Composition",fichier:null,description:"Mathématiques 1ère 2022."},
+      ],
+      "Philosophie":[
+        {id:"a1er_phi1",titre:"Composition semestrielle 2023 — Philosophie 1ère",annee:"2023",type:"Composition",fichier:null,description:"Dissertation philosophique 1ère 2023."},
+      ],
+      "Communication écrite":[
+        {id:"a1er_f1",titre:"Composition semestrielle 2023 — Français 1ère",annee:"2023",type:"Composition",fichier:null,description:"Commentaire et dissertation littéraire 1ère 2023."},
+        {id:"a1er_f2",titre:"Composition semestrielle 2022 — Français 1ère",annee:"2022",type:"Composition",fichier:null,description:"Français 1ère 2022."},
+      ],
+      "SVT":[
+        {id:"a1er_svt1",titre:"Composition semestrielle 2023 — SVT 1ère",annee:"2023",type:"Composition",fichier:null,description:"SVT 1ère scientifique 2023."},
+      ],
+      "Histoire-Géo":[
+        {id:"a1er_hg1",titre:"Composition semestrielle 2023 — Histoire-Géo 1ère",annee:"2023",type:"Composition",fichier:null,description:"Histoire-Géo 1ère 2023."},
+      ],
+    },
+    "Terminale":{
+      "Philosophie":[
+        {id:"a4",titre:"BAC 2023 — Philosophie (séries A & B)",annee:"2023",type:"BAC",fichier:null,description:"Dissertations et explications de texte BAC 2023 — séries littéraires."},
+        {id:"aTer_phi2",titre:"BAC 2022 — Philosophie (séries A & B)",annee:"2022",type:"BAC",fichier:null,description:"Philosophie BAC 2022 séries littéraires."},
+        {id:"aTer_phi3",titre:"BAC 2021 — Philosophie (séries A & B)",annee:"2021",type:"BAC",fichier:null,description:"Philosophie BAC 2021 séries littéraires."},
+      ],
+      "Mathématiques":[
+        {id:"a5",titre:"BAC 2023 — Mathématiques série C",annee:"2023",type:"BAC",fichier:null,description:"Sujet officiel BAC Mathématiques série C 2023."},
+        {id:"a6",titre:"BAC 2023 — Mathématiques série D",annee:"2023",type:"BAC",fichier:null,description:"Sujet officiel BAC Mathématiques série D 2023."},
+        {id:"aTer_m3",titre:"BAC 2022 — Mathématiques série C",annee:"2022",type:"BAC",fichier:null,description:"BAC Mathématiques série C 2022."},
+        {id:"aTer_m4",titre:"BAC 2022 — Mathématiques série D",annee:"2022",type:"BAC",fichier:null,description:"BAC Mathématiques série D 2022."},
+        {id:"aTer_m5",titre:"BAC 2021 — Mathématiques série C",annee:"2021",type:"BAC",fichier:null,description:"BAC Mathématiques série C 2021."},
+      ],
+      "SVT":[
+        {id:"a7",titre:"BAC 2023 — SVT série D",annee:"2023",type:"BAC",fichier:null,description:"Sciences de la vie et de la terre, série D 2023."},
+        {id:"aTer_svt2",titre:"BAC 2022 — SVT série D",annee:"2022",type:"BAC",fichier:null,description:"SVT série D 2022."},
+        {id:"aTer_svt3",titre:"BAC 2021 — SVT série D",annee:"2021",type:"BAC",fichier:null,description:"SVT série D 2021."},
+      ],
+      "Littérature":[
+        {id:"a8",titre:"BAC 2023 — Littérature série A",annee:"2023",type:"BAC",fichier:null,description:"Épreuve de littérature, série A 2023."},
+        {id:"aTer_lit2",titre:"BAC 2022 — Littérature série A",annee:"2022",type:"BAC",fichier:null,description:"Littérature série A 2022."},
+      ],
+      "Communication écrite":[
+        {id:"aTer_fr1",titre:"BAC 2023 — Français séries A & B",annee:"2023",type:"BAC",fichier:null,description:"Dissertation et commentaire littéraire BAC 2023 séries littéraires."},
+        {id:"aTer_fr2",titre:"BAC 2022 — Français séries A & B",annee:"2022",type:"BAC",fichier:null,description:"Français BAC 2022."},
+        {id:"aTer_fr3",titre:"BAC 2023 — Français séries C & D",annee:"2023",type:"BAC",fichier:null,description:"Expression écrite BAC 2023 séries scientifiques."},
+      ],
+      "PCT":[
+        {id:"aTer_pct1",titre:"BAC 2023 — PCT série C",annee:"2023",type:"BAC",fichier:null,description:"Physique-Chimie-Technologie BAC série C 2023."},
+        {id:"aTer_pct2",titre:"BAC 2022 — PCT série C",annee:"2022",type:"BAC",fichier:null,description:"PCT BAC série C 2022."},
+      ],
+      "Histoire-Géo":[
+        {id:"aTer_hg1",titre:"BAC 2023 — Histoire-Géo (toutes séries)",annee:"2023",type:"BAC",fichier:null,description:"Histoire et géographie BAC 2023."},
+        {id:"aTer_hg2",titre:"BAC 2022 — Histoire-Géo (toutes séries)",annee:"2022",type:"BAC",fichier:null,description:"Histoire-Géo BAC 2022."},
+      ],
+      "Anglais":[
+        {id:"aTer_ang1",titre:"BAC 2023 — Anglais (toutes séries)",annee:"2023",type:"BAC",fichier:null,description:"Expression et compréhension en anglais BAC 2023."},
+        {id:"aTer_ang2",titre:"BAC 2022 — Anglais (toutes séries)",annee:"2022",type:"BAC",fichier:null,description:"Anglais BAC 2022."},
+      ],
+      "Economie":[
+        {id:"aTer_eco1",titre:"BAC 2023 — Économie séries A & B",annee:"2023",type:"BAC",fichier:null,description:"Économie BAC 2023 séries littéraires."},
+      ],
+    },
+  },
+  exercices:[
+    {id:1,classe:"3ème A",matiere:"Mathématiques",titre:"Équations du 1er degré",question:"Si 3x + 6 = 15, quelle est la valeur de x ?",choices:["x = 2","x = 3","x = 7","x = 5"],correct:1,expl:"On soustrait 6 : 3x = 9, puis on divise par 3 : x = 3."},
+    {id:2,classe:"3ème A",matiere:"Communication écrite",titre:"Accord du participe passé",question:"Laquelle de ces phrases est correcte ?",choices:["Les fleurs que j'ai cueillie sont belles.","Les fleurs que j'ai cueillies sont belles.","Les fleurs que j'ai cueilli sont belles.","Les fleurs que j'ai cueillis sont belles."],correct:1,expl:"Le participe passé s'accorde avec le COD placé avant."},
+    {id:3,classe:"CP",matiere:"Lecture",titre:"Sons et syllabes",question:"Quel son entend-on dans le mot 'chapeau' ?",choices:["[p]","[ch]","[a]","[o]"],correct:1,expl:"'Ch' fait le son [ch] comme dans chat, chien, chapeau."},
+    // Terminale A & B (littéraires)
+    {id:4,classe:"Terminale A",matiere:"Philosophie",titre:"Kant et la morale",question:"L'impératif catégorique de Kant signifie :",choices:["Agir par intérêt","Agir selon une règle universalisable","Suivre ses émotions","Obéir à l'autorité"],correct:1,expl:"L'impératif catégorique demande d'agir selon des principes que l'on voudrait universels."},
+    {id:5,classe:"Terminale A",matiere:"Littérature",titre:"Figures de style",question:"Quelle figure de style est utilisée dans 'Le vent murmure des secrets' ?",choices:["Métaphore","Personnification","Hyperbole","Allitération"],correct:1,expl:"Attribuer l'action 'murmurer' au vent (non humain) est une personnification."},
+    // Terminale C & D (scientifiques)
+    {id:6,classe:"Terminale C",matiere:"Mathématiques",titre:"Dérivée d'une fonction",question:"Quelle est la dérivée de f(x) = x³ + 2x ?",choices:["f'(x) = 3x + 2","f'(x) = 3x² + 2","f'(x) = x² + 2","f'(x) = 3x²"],correct:1,expl:"Par la règle de dérivation : (xⁿ)' = nxⁿ⁻¹, donc (x³)' = 3x² et (2x)' = 2."},
+    {id:7,classe:"Terminale C",matiere:"SVT",titre:"Division cellulaire",question:"Lors de la méiose, le nombre de chromosomes :",choices:["Double","Reste identique","Est divisé par deux","Est multiplié par quatre"],correct:2,expl:"La méiose produit des cellules haploïdes : le nombre de chromosomes est divisé par deux."},
+  ]
+};
+
+// Charger DB depuis localStorage ou utiliser les valeurs par défaut
+function loadDB(){
+  try {
+    const saved = localStorage.getItem("edubenin_db");
+    if(saved){
+      const parsed = JSON.parse(saved);
+      // Toujours garder les exercices et annales par défaut
+      parsed.exercices = DEFAULT_DB.exercices;
+      parsed.annales = DEFAULT_DB.annales; // toujours recharger les annales
+      // Fusionner les utilisateurs : garder les comptes sauvegardés + ajouter les nouveaux comptes démo manquants
+      DEFAULT_DB.users.forEach(defUser => {
+        const existing = parsed.users.find(u=>u.id===defUser.id);
+        if(!existing){
+          parsed.users.push(defUser);
+        } else {
+          // Toujours mettre à jour l'historique et les scores des élèves démo
+          if(defUser.role==="eleve"&&defUser.historique&&!existing.historique){
+            existing.historique = defUser.historique;
+            existing.matieres = defUser.matieres;
+            existing.score = defUser.score;
+            existing.diffs = defUser.diffs;
+            existing.exercices = defUser.exercices;
+            existing.progression = defUser.progression;
+          }
+        }
+      });
+      if(!parsed.messages) parsed.messages = [];
+      return parsed;
+    }
+  } catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_DB));
+}
+
+function saveDB(){
+  try {
+    localStorage.setItem("edubenin_db", JSON.stringify(DB));
+  } catch(e){}
+}
+
+let DB = loadDB();
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let S = {
+  screen:"login", // login | register | forgot
+  forgotEmail:"",       // login | register | app
+  regRole:"eleve",
+  loginRole:"eleve",
+  user:null,
+  tab:0,
+  exIdx:0,
+  chosenAns:null,
+  selMatiere:null,
+  chatMsgs:[],
+  chatLoading:false,
+  aiSummary:null,
+  aiSummaryLoading:false,
+  aiExercice:null,
+  modal:null,           // null | "add-eleve" | "add-matiere" | "eleve-detail"
+  annalesNiveau:null,   // niveau de base sélectionné pour les annales
+  annalesMat:null,      // matière sélectionnée pour les annales
+  modalData:{},
+  partageSuccess:false,
+  selNiveauxReg:[],     // pour prof registration : classes choisies
+  selNiveauReg:null,    // pour eleve registration
+  promoFilter:null,     // filtre promo pour prof/secretaire
+  // Messagerie
+  msgTab:"inbox",
+  msgRecipient:null,
+  // Exercices IA génèrés dynamiquement
+  aiGenEx:null,
+  aiGenExLoading:false,
+  aiGenExChosen:null,
+  // Cours adaptatifs IA
+  selCoursMatiere:null,   // matière sélectionnée dans Mes cours
+  coursContenu:null,      // {titre, niveau, resume, sections:[{titre,corps}], pointsCles:[], revisionCiblee}
+  coursLoading:false,
+};
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+function ini(n){return (n||"").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()}
+function scoreColor(s){return s>=70?"var(--green)":s>=50?"var(--amber)":"var(--red)"}
+function scoreBadge(s){
+  if(s>=70) return `<span class="badge badge-ok">Bon niveau</span>`;
+  if(s>=50) return `<span class="badge badge-warn">Moyen</span>`;
+  return `<span class="badge badge-danger">En difficulté</span>`;
+}
+function newId(prefix){return prefix+(Date.now()%1000000)}
+function getCycle(n){
+  if(PRIMAIRE.includes(n)) return "primaire";
+  if(n==="4ème") return "quatrieme";
+  if(COLLEGE.includes(n)) return "college";
+  return "lycee";
+}
+function getMatieres(n){
+  const base = getMatieresByNiveau(n);
+  const custom = DB.matieresCustom[n]||[];
+  return [...base,...custom];
+}
+
+async function callIA(system, prompt){
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1000,
+        system,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data = await res.json();
+    return (data.content||[]).map(c=>c.text||"").join("");
+  } catch(e){
+    return null;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER ROOT
+// ══════════════════════════════════════════════════════════
+function render(){
+  const root = document.getElementById("root");
+  if(S.screen==="login") root.innerHTML = renderLogin();
+  else if(S.screen==="register") root.innerHTML = renderRegister();
+  else if(S.screen==="forgot") root.innerHTML = renderForgot();
+  else {
+    if(S.user?.role==="secretaire") root.innerHTML = renderApp(renderSecretaire);
+    else if(S.user?.role==="prof") root.innerHTML = renderApp(renderProf);
+    else root.innerHTML = renderApp(renderEleve);
+  }
+  if(S.modal) document.getElementById("root").insertAdjacentHTML("beforeend", renderModal());
+  attachAll();
+}
+
+// ══════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════
+function renderLogin(){
+  return `<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div class="auth-logo-text">EduBénin IA</div>
+    </div>
+    <div class="auth-title">Connexion</div>
+    <div class="auth-sub">Plateforme éducative intelligente · CP → Terminale</div>
+    <div class="role-tabs">
+      <button class="rtab ${S.loginRole==="eleve"?"active":""}" data-lrole="eleve"><i class="ti ti-school" aria-hidden="true"></i> Élève</button>
+      <button class="rtab ${S.loginRole==="prof"?"active":""}" data-lrole="prof"><i class="ti ti-chalkboard" aria-hidden="true"></i> Professeur</button>
+      <button class="rtab ${S.loginRole==="secretaire"?"active":""}" data-lrole="secretaire"><i class="ti ti-building" aria-hidden="true"></i> Administration</button>
+    </div>
+    <div class="err-msg" id="login-err">E-mail ou mot de passe incorrect.</div>
+    <div class="field"><label>Adresse e-mail</label><input id="inp-id" type="email" placeholder="exemple@email.com"/></div>
+    <div class="field"><label>Mot de passe</label><div class="pw-wrap"><input id="inp-mdp" type="password" placeholder="••••••"/><button type="button" class="pw-eye" data-eye="inp-mdp" tabindex="-1"><i class="ti ti-eye"></i></button></div></div>
+    <button class="btn btn-primary" id="btn-login" style="width:100%;padding:11px">Se connecter</button>
+    <button class="auth-link" id="btn-forgot">Mot de passe oublié ?</button>
+    <button class="auth-link" id="btn-go-register">Première connexion ? Créer mon compte</button>
+  </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// REGISTER
+// ══════════════════════════════════════════════════════════
+function renderRegister(){
+  const isProf = S.regRole==="prof";
+  const isSecr = S.regRole==="secretaire";
+  // Pour les élèves : sélection avec sections, pour les profs aussi
+  const allNiveaux = [...PRIMAIRE, ...COLLEGE, ...LYCEE];
+  const nivGrid = `
+    <div style="margin-bottom:6px"><span style="font-size:10px;font-weight:700;color:var(--text3)">PRIMAIRE</span>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:3px">
+        ${PRIMAIRE.map(n=>`<button class="niv-btn ${isProf?(S.selNiveauxReg.includes(n)?"sel":""):(S.selNiveauReg===n?"sel":"")}" data-niv="${n}" data-multi="${isProf?1:0}">${n}</button>`).join("")}
+      </div>
+    </div>
+    <div style="margin-bottom:6px"><span style="font-size:10px;font-weight:700;color:var(--text3)">COLLÈGE</span>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:3px">
+        ${COLLEGE.map(n=>`<button class="niv-btn ${isProf?(S.selNiveauxReg.includes(n)?"sel":""):(S.selNiveauReg===n?"sel":"")}" data-niv="${n}" data-multi="${isProf?1:0}">${n}</button>`).join("")}
+      </div>
+    </div>
+    <div style="margin-bottom:6px"><span style="font-size:10px;font-weight:700;color:var(--text3)">LYCÉE</span>
+      ${LYCEE_BASE.map(niv=>`
+        <div style="margin-top:4px;margin-bottom:2px;font-size:10px;color:var(--text3)">${niv}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">
+          ${SECTIONS_LYCEE.map(s=>{
+            const cl=`${niv} ${s}`;
+            const isSci=LYCEE_SCI.includes(s);
+            const sel=isProf?(S.selNiveauxReg.includes(cl)):(S.selNiveauReg===cl);
+            return `<button class="niv-btn ${sel?"sel":""}" data-niv="${cl}" data-multi="${isProf?1:0}" style="font-size:10px;${sel?"":(isSci?"border-color:var(--green);color:var(--green)":"border-color:var(--amber);color:var(--amber)")}">${cl}<br><span style="font-size:9px;opacity:.7">${isSci?"Sci.":"Litt."}</span></button>`;
+          }).join("")}
+        </div>`).join("")}
+    </div>`;
+  return `<div class="auth-bg">
+  <div class="auth-card" style="max-width:480px">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div class="auth-logo-text">EduBénin IA</div>
+    </div>
+    <div class="auth-title">Créer mon compte</div>
+    <div class="auth-sub">Inscription — première connexion</div>
+    <div class="role-tabs">
+      <button class="rtab ${S.regRole==="eleve"?"active":""}" data-rrole="eleve"><i class="ti ti-school" aria-hidden="true"></i> Élève</button>
+      <button class="rtab ${S.regRole==="prof"?"active":""}" data-rrole="prof"><i class="ti ti-chalkboard" aria-hidden="true"></i> Professeur</button>
+      <button class="rtab ${S.regRole==="secretaire"?"active":""}" data-rrole="secretaire"><i class="ti ti-building" aria-hidden="true"></i> Administration</button>
+    </div>
+    <div class="err-msg" id="reg-err">Remplissez tous les champs obligatoires.</div>
+    <div class="ok-msg" id="reg-ok">Compte créé avec succès ! Connexion en cours...</div>
+    <div class="field"><label>Prénom et nom *</label><input id="reg-nom" placeholder="Ex: Adjoua Kossou"/></div>
+    <div class="field"><label>Adresse e-mail *</label><input id="reg-id" type="email" placeholder="exemple@email.com"/></div>
+    <div class="field"><label>Mot de passe *</label><div class="pw-wrap"><input id="reg-mdp" type="password" placeholder="Choisir un mot de passe"/><button type="button" class="pw-eye" data-eye="reg-mdp" tabindex="-1"><i class="ti ti-eye"></i></button></div></div>
+    ${isProf ? `
+    <div class="field">
+      <label>Mes classes (sélectionner toutes) *</label>
+      <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:10px">${nivGrid}</div>
+    </div>
+    <div class="field"><label>Code école *</label><input id="reg-code" placeholder="Fourni par l'administration (ex: BENIN-2026)"/></div>
+    ` : isSecr ? `
+    <div class="field"><label>Nom de l'établissement *</label><input id="reg-etab" placeholder="Ex: CEG Cotonou, Lycée Béhanzin…"/></div>
+    <div class="field"><label>Code administrateur *</label><div class="pw-wrap"><input id="reg-code" type="password" placeholder="Code fourni par l'inspection académique"/><button type="button" class="pw-eye" data-eye="reg-code" tabindex="-1"><i class="ti ti-eye"></i></button></div></div>
+    <div style="background:var(--sky);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue);margin-bottom:12px">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Le compte Administration permet de gérer les élèves, les professeurs, les annales et les paramètres de l'école. Le code administrateur est <strong>ADMIN-2026</strong> pour cette démonstration.
+    </div>
+    ` : `
+    <div class="field">
+      <label>Ma classe *</label>
+      <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:10px">${nivGrid}</div>
+    </div>
+    <div class="field"><label>Code de l'établissement *</label><input id="reg-code-etab" placeholder="Ex: CEG-COTONOU-01 (fourni par la secrétaire)"/></div>
+    <div class="field"><label>Identifiant personnel *</label><input id="reg-identifiant" placeholder="Matricule fourni par votre école"/></div>
+    <div class="field"><label>Code PIN *</label><div class="pw-wrap"><input id="reg-pin" type="password" placeholder="Code PIN personnel (ex: A1B2 ou 1234)" maxlength="20"/><button type="button" class="pw-eye" data-eye="reg-pin" tabindex="-1"><i class="ti ti-eye"></i></button></div></div>
+    <div style="background:var(--sky);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue);margin-bottom:12px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> 
+      Le code établissement, votre identifiant et votre code PIN vous sont remis par la secrétaire de votre école lors de votre inscription.
+    </div>
+    `}
+    <button class="btn btn-primary" id="btn-register" style="width:100%;padding:11px">Créer mon compte</button>
+    <button class="auth-link" id="btn-go-login">Déjà un compte ? Se connecter</button>
+  </div>
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════════════════════
+// FORGOT PASSWORD
+// ══════════════════════════════════════════════════════════
+function renderForgot(){
+  return `<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="ti ti-lock-open" aria-hidden="true"></i></div>
+      <div class="auth-logo-text">EduBénin IA</div>
+    </div>
+    <div class="auth-title">Mot de passe oublié</div>
+    <div class="auth-sub">Entrez votre adresse e-mail pour réinitialiser votre mot de passe</div>
+    <div class="err-msg" id="forgot-err">Aucun compte trouvé avec cet e-mail.</div>
+    <div class="ok-msg" id="forgot-ok" style="display:none">
+      <i class="ti ti-mail-check" aria-hidden="true"></i> Un lien de réinitialisation a été envoyé à votre adresse e-mail. Vérifiez votre boîte de réception.
+    </div>
+    <div id="forgot-form">
+      <div class="field"><label>Adresse e-mail</label><input id="forgot-email" type="email" placeholder="exemple@email.com"/></div>
+      <button class="btn btn-primary" id="btn-forgot-send" style="width:100%;padding:11px">Envoyer le lien</button>
+    </div>
+    <button class="auth-link" id="btn-back-login" style="margin-top:10px">← Retour à la connexion</button>
+  </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// APP SHELL
+// ══════════════════════════════════════════════════════════
+function renderApp(contentFn){
+  const u = S.user;
+  const roleLabel = u.role==="secretaire"?("Administration"+(u.etablissement?" · "+u.etablissement:"")):u.role==="prof"?("Professeur · "+(u.classes||[]).join(", ")):`Élève · ${u.classe}${getSerieLabel(u.classe)?" ("+getSerieLabel(u.classe)+")":""}`;
+  const serieInfo = u.role==="eleve"&&getSerieLabel(u.classe)?`<span class="tbadge" style="background:${isLyceeScientifique(u.classe)?"rgba(26,140,91,.25)":"rgba(217,119,6,.25)"};border-color:${isLyceeScientifique(u.classe)?"rgba(26,140,91,.5)":"rgba(217,119,6,.5)"}">${getSerieLabel(u.classe)}</span>`:"";
+  const tabs = getTabsFor(u.role);
+  const unreadMsgs = S.user ? (DB.messages||[]).filter(m=>m.a===S.user.id&&!m.lu).length : 0;
+  return `
+  <div style="display:flex;flex-direction:column;min-height:100vh">
+  <div class="topbar">
+    <div class="tlogo"><i class="ti ti-school" aria-hidden="true"></i> EduBénin IA</div>
+    <div class="tright">
+      <span class="tbadge">${u.role==="secretaire"?"Admin":u.role==="prof"?"Professeur":"Élève"}</span>
+      ${serieInfo}
+      <span class="tuser"><i class="ti ti-user" aria-hidden="true"></i> ${u.nom}</span>
+      <button class="tbtn-logout" id="btn-logout">Déconnexion</button>
+    </div>
+  </div>
+  <div class="nav">
+    ${tabs.map((t,i)=>`<div class="ntab ${S.tab===i?"active":""}" data-tab="${i}"><i class="ti ${t.icon}" aria-hidden="true"></i> ${t.label}${t.label==="Messagerie"&&unreadMsgs>0?`<span class="badge badge-danger" style="margin-left:4px;font-size:10px;padding:1px 6px">${unreadMsgs}</span>`:""}</div>`).join("")}
+  </div>
+  <div class="page-wrap">${contentFn()}</div>
+  </div>`;
+}
+
+function getTabsFor(role){
+  if(role==="eleve") return [
+    {icon:"ti-layout-dashboard",label:"Mon tableau de bord"},
+    {icon:"ti-pencil",label:"Exercices IA"},
+    {icon:"ti-message-dots",label:"Assistant IA"},
+    {icon:"ti-book",label:"Mes cours"},
+    {icon:"ti-archive",label:"Annales"},
+    {icon:"ti-message-2",label:"Messagerie"},
+  ];
+  if(role==="prof") return [
+    {icon:"ti-layout-dashboard",label:"Tableau de bord"},
+    {icon:"ti-users",label:"Ma classe"},
+    {icon:"ti-school",label:"Vue inter-sections"},
+    {icon:"ti-bell",label:"Difficultés & Alertes"},
+    {icon:"ti-chart-line",label:"Performances"},
+    {icon:"ti-send",label:"Partager un contenu"},
+    {icon:"ti-archive",label:"Annales"},
+    {icon:"ti-message-2",label:"Messagerie"},
+  ];
+  // secretaire
+  return [
+    {icon:"ti-layout-dashboard",label:"Vue d'ensemble"},
+    {icon:"ti-user-plus",label:"Inscrire un élève"},
+    {icon:"ti-chalkboard",label:"Gérer les profs"},
+    {icon:"ti-users",label:"Tous les élèves"},
+    {icon:"ti-settings",label:"Matières & Classes"},
+    {icon:"ti-archive",label:"Annales"},
+  ];
+}
+
+// ══════════════════════════════════════════════════════════
+// ÉLÈVE VIEWS
+// ══════════════════════════════════════════════════════════
+function renderEleve(){
+  return [renderEleveDash, renderEleveEx, renderEleveChat, renderEleveCours, renderEleveAnnales, renderMessagerie][S.tab]();
+}
+
+function renderEleveAnnales(){
+  const u = S.user;
+  const niveauBase = getNiveauBase(u.classe);
+  // Forcer l'affichage sur le niveau de l'élève par défaut
+  const niveauActif = S.annalesNiveau || niveauBase;
+  const matieres = getMatieresByNiveau(niveauActif);
+  const matActif = S.annalesMat || matieres[0];
+  const annalesNiv = (DB.annales||{})[niveauActif]||{};
+  const annalesMat = annalesNiv[matActif]||[];
+  const niveauxDispos = [...PRIMAIRE, ...COLLEGE_BASE, ...LYCEE_BASE];
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-archive" aria-hidden="true"></i> Annales — Anciennes épreuves</div>
+    <div style="background:var(--sky);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue);margin-bottom:14px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Prépare tes examens avec les sujets des années précédentes (BEPC, BAC, compositions). Ton niveau : <strong>${u.classe}</strong>.
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
+      <div style="min-width:140px">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Niveau</div>
+        ${niveauxDispos.map(n=>`<button class="btn btn-sm" data-ann-niv="${n}" style="display:block;width:100%;text-align:left;margin-bottom:4px;background:${niveauActif===n?"var(--blue)":"var(--bg)"};color:${niveauActif===n?"#fff":"var(--text)"};${n===niveauBase&&niveauActif!==n?"border-color:var(--blue);font-weight:600":""}">${n}${n===niveauBase?" ★":""}</button>`).join("")}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Matière</div>
+        <div class="promo-filter" style="margin-bottom:14px">
+          ${matieres.map(m=>`<button class="pf-btn ${matActif===m?"active":""}" data-ann-mat="${m}">${m}</button>`).join("")}
+        </div>
+        <div class="card" style="margin-bottom:0;border-left:3px solid var(--blue)">
+          <div class="card-title"><i class="ti ti-book-2" aria-hidden="true"></i> ${matActif} — ${niveauActif} (${annalesMat.length} épreuve${annalesMat.length!==1?"s":""})</div>
+          ${annalesMat.length?annalesMat.map(a=>`<div class="row">
+            <div style="width:36px;height:36px;border-radius:8px;background:${a.type==="BAC"?"var(--amber-lt)":a.type==="CEPD"?"var(--green-lt)":"var(--sky)"};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <span style="font-size:9px;font-weight:700;color:${a.type==="BAC"?"var(--amber)":a.type==="CEPD"?"var(--green)":"var(--blue)"};text-align:center;line-height:1.2">${a.type}</span>
+            </div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:13px">${a.titre}</div>
+              <div style="font-size:11px;color:var(--text2)">${a.annee} · ${a.description||""}</div>
+            </div>
+            ${a.fichier?`<a href="${a.fichier.url}" download="${a.fichier.name}" class="btn btn-sm btn-primary"><i class="ti ti-download" aria-hidden="true"></i> PDF</a>`:`<span style="font-size:11px;color:var(--text3);font-style:italic">Bientôt disponible</span>`}
+          </div>`).join(""):
+          `<div style="font-size:13px;color:var(--text2);font-style:italic">Aucune annale disponible pour cette matière pour l'instant.</div>`}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEleveDash(){
+  const u = S.user;
+  const mats = u.matieres||{};
+  const vals = Object.values(mats);
+  const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  const prog = u.progression>=0?`+${u.progression}%`:`${u.progression}%`;
+  const progColor = u.progression>=0?"var(--green)":"var(--red)";
+  const niveauBaseEleve = getNiveauBase(u.classe);
+  // Contenus ciblant exactement la classe OU le même niveauBase (toutes sections)
+  const tousContenus = DB.contenus.filter(c=>
+    c.classe===u.classe ||
+    c.niveauBase===niveauBaseEleve ||
+    getNiveauBase(c.classe)===niveauBaseEleve
+  );
+  // Distinguer : contenu de ma classe vs contenu d'un prof d'une autre section
+  const contenusClasse  = tousContenus.filter(c=>c.classe===u.classe);
+  const contenusAutres  = tousContenus.filter(c=>c.classe!==u.classe);
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val" style="color:${scoreColor(avg)}">${avg}%</div><div class="metric-lab">Score global</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${(u.diffs||[]).length}</div><div class="metric-lab">Difficultés IA</div></div>
+    <div class="metric"><div class="metric-val" style="color:${progColor}">${prog}</div><div class="metric-lab">Cette semaine</div></div>
+    <div class="metric"><div class="metric-val">${u.exercices||0}</div><div class="metric-lab">Exercices faits</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brain" aria-hidden="true"></i> Analyse de mon profil par l'IA</div>
+    <div id="ai-dash-box">${S.aiSummary
+      ?`<div class="ai-box">${S.aiSummary}</div>`
+      :`<div class="ai-box loading"><span class="spinner"></span>L'IA analyse votre profil…</div>`}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" data-action="goto-ex">Faire mes exercices</button>
+      <button class="btn btn-sm" data-action="goto-chat">Poser une question</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Mes matières</div>
+    ${Object.entries(mats).map(([m,s])=>`
+    <div class="row">
+      <div style="flex:1;font-size:13px">${m}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${s}%;background:${scoreColor(s)}"></div></div>
+      <div style="font-size:13px;font-weight:600;color:${scoreColor(s)};width:36px;text-align:right">${s}%</div>
+    </div>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Mes difficultés détectées</div>
+    ${(u.diffs||[]).map(d=>`<div class="row" style="gap:8px"><i class="ti ti-point-filled" style="color:var(--amber)" aria-hidden="true"></i><span style="font-size:13px">${d}</span></div>`).join("")}
+    ${!(u.diffs||[]).length?`<div style="color:var(--text3);font-size:13px">Aucune difficulté détectée. Continuez comme ça !</div>`:""}
+  </div>
+  ${contenusClasse.length||contenusAutres.length?`
+  <div class="card">
+    <div class="card-title"><i class="ti ti-file-text" aria-hidden="true"></i> Contenus partagés pour moi</div>
+
+    ${contenusClasse.length?`
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">De mes professeurs</div>
+    ${contenusClasse.map(c=>`<div class="row" style="margin-bottom:6px">
+      <i class="ti ${c.pdf?'ti-file-type-pdf':'ti-file-description'}" style="font-size:20px;color:${c.pdf?'var(--red)':'var(--blue)'}" aria-hidden="true"></i>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${c.titre}</div>
+        <div style="font-size:11px;color:var(--text2)">${c.matiere} · ${c.auteur} · ${c.date}</div>
+        ${c.contenu?`<div style="font-size:12px;color:var(--text);margin-top:4px;line-height:1.5">${c.contenu}</div>`:""}
+        ${c.pdf?`<a href="${c.pdf.url}" download="${c.pdf.name}" style="font-size:11px;color:var(--blue);display:inline-flex;align-items:center;gap:3px;margin-top:4px"><i class="ti ti-download" aria-hidden="true"></i> ${c.pdf.name}</a>`:""}
+      </div>
+      <span class="badge badge-ok">Reçu</span>
+    </div>`).join("")}`:""}
+
+    ${contenusAutres.length?`
+    <div style="margin-top:${contenusClasse.length?12:0}px">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+        <i class="ti ti-heart" style="color:var(--blue)" aria-hidden="true"></i> D'autres professeurs qui ont vu tes difficultés
+      </div>
+      ${contenusAutres.map(c=>`<div class="row" style="margin-bottom:6px;background:linear-gradient(135deg,#eef4ff,#f0fdf8);border-radius:var(--radius);padding:10px 12px;border:1px solid var(--border)">
+        <i class="ti ${c.pdf?'ti-file-type-pdf':'ti-file-description'}" style="font-size:20px;color:var(--blue)" aria-hidden="true"></i>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13px">${c.titre}</div>
+          <div style="font-size:11px;color:var(--blue);margin-top:2px;font-weight:500">
+            <i class="ti ti-sparkles" aria-hidden="true"></i>
+            ${c.auteur} <span style="font-weight:400;color:var(--text3)">(prof de ${c.classe})</span> a vu tes difficultés en <strong>${c.matiere}</strong> et a voulu t'aider
+          </div>
+          ${c.contenu?`<div style="font-size:12px;color:var(--text);margin-top:6px;line-height:1.5">${c.contenu}</div>`:""}
+          ${c.pdf?`<a href="${c.pdf.url}" download="${c.pdf.name}" style="font-size:11px;color:var(--blue);display:inline-flex;align-items:center;gap:3px;margin-top:4px"><i class="ti ti-download" aria-hidden="true"></i> ${c.pdf.name}</a>`:""}
+        </div>
+        <span class="badge badge-blue">Solidarité</span>
+      </div>`).join("")}
+    </div>`:""}
+  </div>`:""}`;
+}
+
+function renderEleveEx(){
+  const u = S.user;
+  const matieres = getMatieres(u.classe);
+  const exosByMat = mat => DB.exercices.filter(e=>e.classe===u.classe&&e.matiere===mat);
+
+  // If no subject selected yet, show subject picker
+  if(!S.selMatiere){
+    return `
+    <div class="card">
+      <div class="card-title"><i class="ti ti-books" aria-hidden="true"></i> Choisir une matière</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Sélectionne la matière dans laquelle tu veux faire des exercices.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">
+        ${matieres.map(m=>{
+          const score = u.matieres?.[m]??0;
+          const exCount = exosByMat(m).length;
+          return `<button data-selmat="${m}" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 12px;text-align:left;cursor:pointer;transition:all .15s;font-family:inherit" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">${m}</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              <div class="bar-bg" style="width:60px"><div class="bar-fill" style="width:${score}%;background:${score>=70?'var(--green)':score>=50?'var(--amber)':'var(--red)'}"></div></div>
+              <span style="font-size:11px;font-weight:700;color:${score>=70?'var(--green)':score>=50?'var(--amber)':'var(--red)'}">${score}%</span>
+            </div>
+            <div style="font-size:11px;color:var(--text3)">${exCount} exercice${exCount>1?'s':''} disponible${exCount>1?'s':''}</div>
+          </button>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+
+  // Subject selected — show exercise
+  const exos = exosByMat(S.selMatiere);
+  if(!exos.length){
+    return `<div class="card">
+      <button data-action="back-mat" class="btn btn-sm" style="margin-bottom:12px">← Changer de matière</button>
+      <div style="color:var(--text2);font-size:13px">Aucun exercice disponible en <strong>${S.selMatiere}</strong> pour le moment. Votre professeur en ajoutera bientôt.</div>
+    </div>`;
+  }
+  const idx = S.exIdx % exos.length;
+  const ex = exos[idx];
+  return `
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button data-action="back-mat" class="btn btn-sm" style="padding:4px 10px;font-size:12px">← Matières</button>
+        <span class="tag">${ex.matiere}</span> <span class="tag">${u.classe}</span>
+        ${(()=>{const s=u.matieres?.[S.selMatiere]||0;const lbl=s<40?"Niveau débutant":s<65?"Niveau intermédiaire":"Niveau avancé";const col=s<40?"var(--red)":s<65?"var(--amber)":"var(--green)";return `<span style="font-size:10px;font-weight:700;color:${col};background:var(--bg);border:1px solid ${col};padding:2px 8px;border-radius:20px">${lbl}</span>`;})()}
+      </div>
+      <div style="font-size:12px;color:var(--text2)">${idx+1} / ${exos.length}</div>
+    </div>
+    <div class="card-title">Question</div>
+    <div style="font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500">${ex.question}</div>
+    <div id="choices">
+      ${ex.choices.map((c,i)=>`<div class="choice-opt ${S.chosenAns===null?"":S.chosenAns===i?(i===ex.correct?"correct":"wrong"):(i===ex.correct?"correct":"")}" data-choice="${i}">
+        <span style="width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${String.fromCharCode(65+i)}</span>
+        ${c}
+      </div>`).join("")}
+    </div>
+    ${S.chosenAns!==null?`<div style="margin-top:12px;padding:10px 14px;background:${S.chosenAns===ex.correct?"var(--green-lt)":"var(--red-lt)"};border-radius:var(--radius);font-size:13px;color:${S.chosenAns===ex.correct?"var(--green)":"var(--red)"}">
+      <strong>${S.chosenAns===ex.correct?"✓ Bravo !":"✗ Pas tout à fait."}</strong> ${ex.expl}
+    </div>`:""}
+    <div id="ai-ex-box" style="margin-top:10px">${S.aiExercice?`<div class="ai-box">${S.aiExercice}</div>`:S.chosenAns!==null?`<div class="ai-box loading"><span class="spinner"></span>L'IA prépare votre retour…</div>`:""}</div>
+    ${S.chosenAns!==null?`<button class="btn btn-primary btn-sm" data-action="next-ex" style="margin-top:10px">Exercice suivant →</button>`:""}
+  </div>
+  ${renderAiGenExSection()}`;
+}
+
+function renderAiGenExSection(){
+  const u = S.user;
+  if(!S.selMatiere) return "";
+  const score = u.matieres?.[S.selMatiere]||0;
+  const niveauLbl = score<40?"Débutant":score<65?"Intermédiaire":"Avancé";
+  const niveauCol = score<40?"var(--red)":score<65?"var(--amber)":"var(--green)";
+
+  if(S.aiGenExLoading) return `
+  <div class="card" style="border-left:3px solid var(--blue);margin-top:0">
+    <div class="card-title"><i class="ti ti-sparkles" style="color:var(--blue)" aria-hidden="true"></i> Exercice généré par l'IA — Niveau ${niveauLbl}</div>
+    <div class="ai-box loading"><span class="spinner"></span>L'IA génère un exercice adapté à votre niveau ${niveauLbl.toLowerCase()} en ${S.selMatiere}…</div>
+  </div>`;
+
+  if(S.aiGenEx){
+    const ex = S.aiGenEx;
+    return `
+  <div class="card" style="border-left:3px solid var(--blue);margin-top:0">
+    <div class="card-title"><i class="ti ti-sparkles" style="color:var(--blue)" aria-hidden="true"></i> Exercice IA adaptatif — <span style="color:${niveauCol}">${niveauLbl}</span></div>
+    <div style="background:linear-gradient(135deg,#eef4ff,#e8f8f3);border-radius:var(--radius);padding:8px 12px;font-size:11px;color:var(--blue);margin-bottom:12px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> Cet exercice a été généré spécifiquement pour toi, selon ton niveau actuel en ${S.selMatiere} (${score}%).
+    </div>
+    <div style="font-size:15px;font-weight:500;line-height:1.6;margin-bottom:14px">${ex.question}</div>
+    <div>
+      ${ex.options.map((opt,i)=>`<div class="choice-opt ${S.aiGenExChosen===null?"":S.aiGenExChosen===i?(i===ex.correct?"correct":"wrong"):(i===ex.correct?"correct":"")}" data-aigen-choice="${i}" style="cursor:${S.aiGenExChosen!==null?"default":"pointer"}">
+        <span style="width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${String.fromCharCode(65+i)}</span>
+        ${opt}
+      </div>`).join("")}
+    </div>
+    ${S.aiGenExChosen!==null?`<div style="margin-top:12px;padding:12px 14px;background:${S.aiGenExChosen===ex.correct?"var(--green-lt)":"var(--red-lt)"};border-radius:var(--radius);font-size:13px;color:${S.aiGenExChosen===ex.correct?"var(--green)":"var(--red)"}">
+      <strong>${S.aiGenExChosen===ex.correct?"✓ Excellent !":"✗ Pas tout à fait."}</strong> ${ex.explication}
+    </div>`:""}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn btn-primary btn-sm" id="btn-gen-ai-ex"><i class="ti ti-refresh" aria-hidden="true"></i> Générer un autre exercice IA</button>
+    </div>
+  </div>`;
+  }
+
+  return `
+  <div class="card" style="border-left:3px solid var(--blue);margin-top:0">
+    <div class="card-title"><i class="ti ti-sparkles" style="color:var(--blue)" aria-hidden="true"></i> Exercice IA adaptatif — <span style="color:${niveauCol}">${niveauLbl}</span></div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:12px">
+      L'IA peut générer un exercice sur-mesure, calibré précisément sur ton niveau actuel en <strong>${S.selMatiere}</strong> (${score}% · ${niveauLbl.toLowerCase()}) et tes difficultés détectées.
+    </div>
+    <button class="btn btn-primary btn-sm" id="btn-gen-ai-ex"><i class="ti ti-sparkles" aria-hidden="true"></i> Générer un exercice personnalisé par l'IA</button>
+  </div>`;
+}
+
+function renderEleveChat(){
+  const u = S.user;
+  return `
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title"><i class="ti ti-message-dots" aria-hidden="true"></i> Assistant IA — ${u.nom} · ${u.classe}</div>
+    <div id="chat-messages" style="min-height:180px;max-height:340px;overflow-y:auto;margin-bottom:4px">
+      ${S.chatMsgs.length===0?`<div style="font-size:13px;color:var(--text2);padding:8px 0">Bonjour ${u.nom} ! Pose-moi toutes tes questions sur tes cours en ${u.classe}. Je suis là pour t'aider 24h/24 !</div>`:""}
+      ${S.chatMsgs.map(m=>`<div class="chat-msg ${m.role==="user"?"chat-user":"chat-ai"}">${m.content}</div>`).join("")}
+      ${S.chatLoading?`<div class="chat-msg chat-ai"><span class="spinner"></span>L'IA réfléchit…</div>`:""}
+    </div>
+    <div class="chat-row">
+      <input id="chat-inp" placeholder="Pose ta question ici…" ${S.chatLoading?"disabled":""}/>
+      <button class="btn btn-primary btn-sm" id="btn-send" ${S.chatLoading?"disabled":""}>Envoyer</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+      ${["Explique-moi les fractions","Qu'est-ce que la photosynthèse ?","Comment résoudre une équation ?","Quel est le subjonctif ?"].map(q=>`<button class="btn btn-sm" data-quick="${q}">${q}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function renderEleveCours(){
+  const u = S.user;
+  const matieres = getMatieres(u.classe);
+
+  // ── Vue fiche de cours adaptive ──
+  if(S.selCoursMatiere){
+    const score = u.matieres?.[S.selCoursMatiere]||0;
+    const niveauLbl = score<40?"Débutant":score<65?"Intermédiaire":"Avancé";
+    const niveauCol = score<40?"var(--red)":score<65?"var(--amber)":"var(--green)";
+
+    if(S.coursLoading) return `
+    <button class="btn btn-sm" id="btn-back-cours" style="margin-bottom:14px">← Mes matières</button>
+    <div class="card" style="border-left:3px solid var(--blue)">
+      <div class="card-title"><i class="ti ti-brain" style="color:var(--blue)" aria-hidden="true"></i> ${S.selCoursMatiere} — Génération en cours…</div>
+      <div class="ai-box loading" style="margin-bottom:8px"><span class="spinner"></span>L'IA construit une fiche personnalisée pour <strong>${u.nom}</strong>, niveau <strong style="color:${niveauCol}">${niveauLbl}</strong> en ${S.selCoursMatiere}…</div>
+      <div style="font-size:12px;color:var(--text3)">Analyse du profil · Détection des difficultés · Adaptation du contenu…</div>
+    </div>`;
+
+    if(S.coursContenu){
+      const c = S.coursContenu;
+      return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-sm" id="btn-back-cours">← Mes matières</button>
+      <span class="tag">${S.selCoursMatiere}</span>
+      <span class="tag">${u.classe}</span>
+      <span style="font-size:11px;font-weight:700;color:${niveauCol};background:var(--bg);border:1px solid ${niveauCol};padding:2px 10px;border-radius:20px">${niveauLbl}</span>
+      <button class="btn btn-sm btn-primary" id="btn-regen-cours" style="margin-left:auto"><i class="ti ti-refresh" aria-hidden="true"></i> Régénérer</button>
+    </div>
+
+    <!-- En-tête fiche -->
+    <div class="card" style="border-left:4px solid var(--blue);background:linear-gradient(135deg,#eef4ff 0%,#f0fdf8 100%)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px">${c.titre||S.selCoursMatiere}</div>
+          <div style="font-size:12px;color:var(--text2)">${u.classe} · Adapté à votre profil · Score actuel : <strong style="color:${niveauCol}">${score}%</strong></div>
+        </div>
+        <span style="font-size:11px;font-weight:700;color:var(--blue);background:var(--sky);padding:4px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-sparkles" aria-hidden="true"></i> Contenu IA adaptatif</span>
+      </div>
+      ${c.resume?`<div style="margin-top:12px;font-size:13px;line-height:1.7;color:var(--navy)">${c.resume}</div>`:""}
+    </div>
+
+    ${(c.alerteDiff&&c.alerteDiff.length)?`
+    <div class="card" style="border-left:4px solid var(--amber);background:var(--amber-lt)">
+      <div class="card-title" style="color:var(--amber)"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Points à renforcer en priorité (détectés par l'IA)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${c.alerteDiff.map(d=>`<span style="background:white;border:1px solid var(--amber);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600">${d}</span>`).join("")}
+      </div>
+    </div>`:""}
+
+    <!-- Sections du cours -->
+    ${(c.sections||[]).map((sec,i)=>`
+    <div class="card">
+      <div class="card-title" style="font-size:14px;color:var(--navy)">
+        <span style="width:26px;height:26px;border-radius:50%;background:var(--blue);color:white;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${i+1}</span>
+        ${sec.titre}
+      </div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-line">${sec.corps}</div>
+    </div>`).join("")}
+
+    <!-- Points clés à retenir -->
+    ${(c.pointsCles&&c.pointsCles.length)?`
+    <div class="card" style="border-left:4px solid var(--green);background:var(--green-lt)">
+      <div class="card-title" style="color:var(--green)"><i class="ti ti-check-circle" aria-hidden="true"></i> Points clés à retenir</div>
+      ${c.pointsCles.map(p=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:13px;border-bottom:1px solid rgba(26,140,91,.15)">
+        <i class="ti ti-point-filled" style="color:var(--green);margin-top:3px;flex-shrink:0" aria-hidden="true"></i>
+        <span>${p}</span>
+      </div>`).join("")}
+    </div>`:""}
+
+    <!-- Révision ciblée sur les difficultés -->
+    ${c.revisionCiblee?`
+    <div class="card" style="border-left:4px solid var(--blue)">
+      <div class="card-title"><i class="ti ti-target" style="color:var(--blue)" aria-hidden="true"></i> Révision ciblée — Adapté à vos difficultés</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-line">${c.revisionCiblee}</div>
+    </div>`:""}
+
+    <!-- Exemples du quotidien -->
+    ${c.exempleQuotidien?`
+    <div class="card" style="background:linear-gradient(135deg,#f0fdf8,#eef4ff)">
+      <div class="card-title"><i class="ti ti-bulb" style="color:var(--amber)" aria-hidden="true"></i> Exemples du quotidien — Contexte béninois</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text);white-space:pre-line">${c.exempleQuotidien}</div>
+    </div>`:""}
+
+    <!-- Actions -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:20px">
+      <button class="btn btn-primary btn-sm" data-action="goto-ex"><i class="ti ti-pencil" aria-hidden="true"></i> Faire les exercices correspondants</button>
+      <button class="btn btn-sm" data-action="goto-chat"><i class="ti ti-message-dots" aria-hidden="true"></i> Poser une question à l'IA</button>
+    </div>`;
+    }
+
+    // Pas encore de contenu — bouton de génération
+    return `
+    <button class="btn btn-sm" id="btn-back-cours" style="margin-bottom:14px">← Mes matières</button>
+    <div class="card" style="border-left:4px solid var(--blue)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:white;font-size:22px;flex-shrink:0"><i class="ti ti-book-2" aria-hidden="true"></i></div>
+        <div>
+          <div style="font-weight:700;font-size:16px">${S.selCoursMatiere}</div>
+          <div style="font-size:12px;color:var(--text2)">${u.classe} · Score actuel : <strong style="color:${niveauCol}">${score}%</strong> · Niveau <strong style="color:${niveauCol}">${niveauLbl}</strong></div>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#eef4ff,#e8f8f3);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--navy);margin-bottom:16px;line-height:1.6">
+        <strong><i class="ti ti-sparkles" aria-hidden="true"></i> Fiche de cours adaptative IA</strong><br>
+        L'IA va générer une fiche de cours complète, personnalisée pour <strong>${u.nom}</strong> selon :<br>
+        <span style="font-size:12px">
+          · Votre niveau actuel en ${S.selCoursMatiere} (${score}% · ${niveauLbl.toLowerCase()})<br>
+          ${(u.diffs||[]).length?`· Vos difficultés détectées : <strong>${(u.diffs||[]).slice(0,3).join(", ")}</strong><br>`:""}
+          · Des exemples concrets adaptés au contexte béninois<br>
+          · Une révision ciblée sur vos points faibles
+        </span>
+      </div>
+      <button class="btn btn-primary" id="btn-gen-cours"><i class="ti ti-sparkles" aria-hidden="true"></i> Générer ma fiche de cours personnalisée</button>
+    </div>`;
+  }
+
+  // ── Vue liste des matières ──
+  return `
+  <div style="background:linear-gradient(135deg,#eef4ff,#e8f8f3);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--navy)">
+    <strong><i class="ti ti-sparkles" aria-hidden="true"></i> Cours adaptatifs — Personnalisés par l'IA</strong><br>
+    <span style="font-size:12px;line-height:1.7">Chaque fiche est générée spécifiquement pour ton profil : niveau actuel, difficultés détectées, et exemples du quotidien béninois.</span>
+  </div>
+  ${matieres.map(m=>{
+    const s = u.matieres?.[m]||0;
+    const nLbl = s<40?"Débutant":s<65?"Intermédiaire":"Avancé";
+    const nCol = s<40?"var(--red)":s<65?"var(--amber)":"var(--green)";
+    const isDiff = (u.diffs||[]).some(d=>d.toLowerCase().includes(m.toLowerCase())||m.toLowerCase().includes(d.toLowerCase()));
+    return `<div class="card" style="${isDiff?"border-left:3px solid var(--amber)":""}">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:42px;height:42px;border-radius:10px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">
+          <i class="ti ${m.includes("Math")?"ti-math":m.includes("SVT")||m.includes("Sci")?"ti-microscope":m.includes("Anglais")?"ti-language":m.includes("Histoire")?"ti-map":m.includes("écrit")||m.includes("Lecture")?"ti-books":m.includes("Philo")?"ti-brain":m.includes("PCT")||m.includes("Phys")?"ti-atom":"ti-book"}" style="color:var(--blue)" aria-hidden="true"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <span style="font-weight:700;font-size:14px">${m}</span>
+            ${isDiff?`<span class="badge badge-warn" style="font-size:10px">Point faible</span>`:""}
+            <span style="font-size:11px;font-weight:700;color:${nCol};background:var(--bg);border:1px solid ${nCol};padding:1px 8px;border-radius:20px;margin-left:auto">${nLbl}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:${s}%;background:${nCol}"></div></div>
+            <span style="font-size:12px;font-weight:700;color:${nCol};width:34px;text-align:right">${s}%</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" data-cours-mat="${m}"><i class="ti ti-sparkles" aria-hidden="true"></i> Fiche adaptative IA</button>
+        <button class="btn btn-sm" data-revise="${m}"><i class="ti ti-message-dots" aria-hidden="true"></i> Demander à l'assistant</button>
+      </div>
+    </div>`;
+  }).join("")}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// PROF VIEWS
+// ══════════════════════════════════════════════════════════
+function renderProf(){
+  return [renderProfDash, renderProfEleves, renderProfAllSections, renderProfAlerts, renderProfPerformances, renderProfShare, renderAnnales, renderMessagerie][S.tab]();
+}
+
+// ── PERFORMANCES : graphiques d'évolution par élève ──
+function renderProfPerformances(){
+  const u = S.user;
+  const filtre = S.promoFilter || (u.classes||[])[0];
+  const eleves = DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+  const elevesFiltre = filtre ? eleves.filter(e=>e.classe===filtre) : eleves;
+  const eleveActif = S.perfEleveId ? elevesFiltre.find(e=>e.id===S.perfEleveId)||elevesFiltre[0] : elevesFiltre[0];
+
+  function miniSparkline(historique, matiere, w=80, h=28){
+    if(!historique||historique.length<2) return `<svg width="${w}" height="${h}"><text x="4" y="18" font-size="9" fill="var(--text3)">—</text></svg>`;
+    const vals = historique.map(s=>s.scores?.[matiere]??0);
+    const min = Math.min(...vals), max = Math.max(...vals)||1;
+    const pts = vals.map((v,i)=>{
+      const x = (i/(vals.length-1))*(w-4)+2;
+      const y = h-2 - ((v-min)/(max-min||1))*(h-6);
+      return `${x},${y}`;
+    }).join(" ");
+    const last = vals[vals.length-1];
+    const col = last>=70?"var(--green)":last>=50?"var(--amber)":"var(--red)";
+    return `<svg width="${w}" height="${h}" style="overflow:visible"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts.split(" ").pop().split(",")[0]}" cy="${pts.split(" ").pop().split(",")[1]}" r="3" fill="${col}"/></svg>`;
+  }
+
+  function bigChart(eleve){
+    if(!eleve) return "";
+    const hist = eleve.historique||[];
+    if(!hist.length) return `<div style="font-size:13px;color:var(--text2);font-style:italic">Pas encore d'historique pour cet élève.</div>`;
+    const mats = Object.keys(eleve.matieres||{});
+    const semaines = hist.map(h=>h.semaine);
+    const W=320, H=180, padL=28, padB=24, padT=10, padR=10;
+    const chartW=W-padL-padR, chartH=H-padB-padT;
+    const colors=["var(--blue)","var(--green)","var(--amber)","var(--red)","#8b5cf6","#06b6d4","#f43f5e","#84cc16"];
+
+    // Y axis 0-100
+    const yLines = [0,25,50,75,100];
+    const yL = yLines.map(v=>{
+      const y = padT + chartH - (v/100)*chartH;
+      return `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--border)" stroke-width="0.7"/>
+              <text x="${padL-4}" y="${y+4}" font-size="8" fill="var(--text3)" text-anchor="end">${v}</text>`;
+    }).join("");
+
+    // X axis labels
+    const xL = semaines.map((s,i)=>{
+      const x = padL + (i/(semaines.length-1||1))*chartW;
+      return `<text x="${x}" y="${H-6}" font-size="9" fill="var(--text2)" text-anchor="middle">${s}</text>`;
+    }).join("");
+
+    // Lines per matiere
+    const matSel = S.perfMatiere || mats[0];
+    const lines = [matSel].map((mat,mi)=>{
+      const col = colors[mats.indexOf(mat)%colors.length];
+      const pts = hist.map((h,i)=>{
+        const v = h.scores?.[mat]??0;
+        const x = padL + (i/(semaines.length-1||1))*chartW;
+        const y = padT + chartH - (v/100)*chartH;
+        return {x,y,v};
+      });
+      const polyPts = pts.map(p=>`${p.x},${p.y}`).join(" ");
+      const dots = pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${col}" stroke="white" stroke-width="1.5"><title>${mat}: ${p.v}%</title></circle>`).join("");
+      // Area fill
+      const areaFirst = pts[0], areaLast = pts[pts.length-1];
+      const areaPath = `M${areaFirst.x},${padT+chartH} ${pts.map(p=>`L${p.x},${p.y}`).join(" ")} L${areaLast.x},${padT+chartH} Z`;
+      return `<path d="${areaPath}" fill="${col}" opacity="0.08"/>
+              <polyline points="${polyPts}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              ${dots}`;
+    }).join("");
+
+    const lastVal = hist[hist.length-1]?.scores?.[matSel]??0;
+    const firstVal = hist[0]?.scores?.[matSel]??0;
+    const delta = lastVal - firstVal;
+
+    return `
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Matière à afficher</div>
+      <div class="promo-filter" style="flex-wrap:wrap">
+        ${mats.map(m=>`<button class="pf-btn ${(S.perfMatiere||mats[0])===m?"active":""}" data-perf-mat="${m}">${m}</button>`).join("")}
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="font-size:13px;font-weight:600">${matSel}</div>
+      <span class="badge ${delta>=0?"badge-ok":"badge-danger"}">${delta>=0?"+":""}${delta} pts sur 4 semaines</span>
+      <span class="badge badge-blue">Actuel : ${lastVal}%</span>
+    </div>
+    <svg width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible;display:block;max-width:${W}px">
+      ${yL}${xL}${lines}
+    </svg>`;
+  }
+
+  return `
+  <div class="promo-filter" style="margin-bottom:10px">
+    ${(u.classes||[]).map(cl=>`<button class="pf-btn ${filtre===cl?"active":""}" data-pfilter="${cl}">${cl}</button>`).join("")}
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
+    <!-- Liste des élèves avec sparklines -->
+    <div style="min-width:220px;max-width:260px">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Élèves de ${filtre}</div>
+      ${elevesFiltre.length===0?`<div style="font-size:13px;color:var(--text2)">Aucun élève dans cette classe.</div>`:
+      elevesFiltre.map(e=>{
+        const avg=Object.values(e.matieres||{}).length?Math.round(Object.values(e.matieres||{}).reduce((a,b)=>a+b,0)/Object.values(e.matieres||{}).length):0;
+        const isActive = eleveActif&&e.id===eleveActif.id;
+        const matPrinc = S.perfMatiere || Object.keys(e.matieres||{})[0];
+        return `<div data-perf-eleve="${e.id}" style="display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;margin-bottom:4px;background:${isActive?"var(--sky)":"var(--white)"};border:1.5px solid ${isActive?"var(--blue)":"var(--border)"};transition:all .15s">
+          <div class="avatar" style="width:30px;height:30px;font-size:11px;flex-shrink:0;background:${isActive?"var(--blue)":"var(--bg)"};color:${isActive?"#fff":"var(--text2)"}">${ini(e.nom)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.nom}</div>
+            <div style="font-size:10px;color:${scoreColor(avg)};font-weight:700">${avg}% moy.</div>
+          </div>
+          ${miniSparkline(e.historique, matPrinc, 60, 24)}
+        </div>`;
+      }).join("")}
+    </div>
+    <!-- Graphique détaillé -->
+    <div style="flex:1;min-width:0" class="card" style="margin-bottom:0">
+      ${eleveActif?`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div class="avatar" style="width:40px;height:40px;background:var(--blue);color:#fff">${ini(eleveActif.nom)}</div>
+        <div>
+          <div style="font-weight:700;font-size:15px">${eleveActif.nom}</div>
+          <div style="font-size:12px;color:var(--text2)">${eleveActif.classe} · ${eleveActif.exercices||0} exercices complétés</div>
+        </div>
+        ${(eleveActif.diffs||[]).length?`<span class="badge badge-danger"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ${eleveActif.diffs.length} difficulté${eleveActif.diffs.length>1?"s":""}</span>`:`<span class="badge badge-ok">En bonne progression</span>`}
+      </div>
+      <div style="margin-bottom:16px">${bigChart(eleveActif)}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Détail par matière — semaine actuelle</div>
+      ${Object.entries(eleveActif.matieres||{}).map(([m,s])=>`
+      <div class="row" style="margin-bottom:2px">
+        <div style="flex:1;font-size:12px">${m}</div>
+        ${miniSparkline(eleveActif.historique, m, 70, 22)}
+        <div class="bar-bg" style="width:80px"><div class="bar-fill" style="width:${s}%;background:${scoreColor(s)}"></div></div>
+        <div style="font-size:12px;font-weight:700;color:${scoreColor(s)};width:32px;text-align:right">${s}%</div>
+      </div>`).join("")}
+      `:`<div style="font-size:13px;color:var(--text2)">Sélectionnez un élève pour voir son évolution.</div>`}
+    </div>
+  </div>`;
+}
+
+function renderProfDash(){
+  const u = S.user;
+  const mesEleves = DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+  const vals = mesEleves.map(e=>Object.values(e.matieres||{}).reduce((a,b)=>a+b,0)/Math.max(Object.keys(e.matieres||{}).length,1));
+  const moy = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  const enDiff = mesEleves.filter(e=>e.diffs&&e.diffs.length>0).length;
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val">${mesEleves.length}</div><div class="metric-lab">Mes élèves</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${enDiff}</div><div class="metric-lab">En difficulté</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--green)">${mesEleves.filter(e=>(e.progression||0)>0).length}</div><div class="metric-lab">En progression</div></div>
+    <div class="metric"><div class="metric-val">${moy}%</div><div class="metric-lab">Score moyen</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brain" aria-hidden="true"></i> Résumé IA — ${(u.classes||[]).join(", ")}</div>
+    <div id="ai-prof-box">${S.aiSummary
+      ?`<div class="ai-box">${S.aiSummary}</div>`
+      :`<div class="ai-box loading"><span class="spinner"></span>L'IA analyse vos classes…</div>`}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Aperçu de mes classes</div>
+    ${(u.classes||[]).map(cl=>{
+      const eleves = DB.users.filter(e=>e.role==="eleve"&&e.classe===cl);
+      return `<div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-weight:700;color:var(--blue)">${cl}</span>
+          <span style="font-size:12px;color:var(--text2)">${eleves.length} élève${eleves.length!==1?"s":""}</span>
+        </div>
+        ${eleves.slice(0,3).map(e=>eleveMiniRow(e)).join("")}
+        ${eleves.length>3?`<div style="font-size:12px;color:var(--text2);margin-top:6px">+${eleves.length-3} autres élèves</div>`:""}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function eleveMiniRow(e){
+  const vals = Object.values(e.matieres||{});
+  const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  return `<div class="row">
+    <div class="avatar">${ini(e.nom)}</div>
+    <div style="flex:1"><div style="font-weight:500">${e.nom}</div><div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).slice(0,2).join(", ")||"Aucune difficulté"}</div></div>
+    <div class="bar-bg" style="margin-right:8px"><div class="bar-fill" style="width:${avg}%;background:${scoreColor(avg)}"></div></div>
+    <div style="font-size:13px;font-weight:600;color:${scoreColor(avg)};width:34px;text-align:right">${avg}%</div>
+  </div>`;
+}
+
+function renderProfEleves(){
+  const u = S.user;
+  const filtre = S.promoFilter || (u.classes||[])[0];
+  return `
+  <div class="promo-filter">
+    ${(u.classes||[]).map(cl=>`<button class="pf-btn ${filtre===cl?"active":""}" data-pfilter="${cl}">${cl}</button>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Élèves de ${filtre} — difficultés détectées</div>
+    ${(()=>{
+      const eleves = DB.users.filter(e=>e.role==="eleve"&&e.classe===filtre);
+      if(!eleves.length) return `<div style="color:var(--text2);font-size:13px">Aucun élève inscrit en ${filtre}.</div>`;
+      return eleves.map(e=>{
+        const vals = Object.values(e.matieres||{});
+        const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+        return `<div class="row">
+          <div class="avatar">${ini(e.nom)}</div>
+          <div style="flex:1">
+            <div style="font-weight:600">${e.nom}</div>
+            <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).join(", ")||"Aucune difficulté détectée"}</div>
+          </div>
+          ${scoreBadge(avg)}
+          <div class="bar-bg"><div class="bar-fill" style="width:${avg}%;background:${scoreColor(avg)}"></div></div>
+          <div style="font-size:13px;font-weight:600;width:34px;text-align:right;color:${scoreColor(avg)}">${avg}%</div>
+          <button class="btn btn-sm btn-ghost" data-detail-eleve="${e.id}"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        </div>`;
+      }).join("");
+    })()}
+  </div>`;
+}
+
+function renderProfAllSections(){
+  const u = S.user;
+  // Déterminer les niveaux de base des classes du prof
+  const niveauxBase = [...new Set((u.classes||[]).map(c=>getNiveauBase(c)))];
+  const niveauActif = S.promoFilter || niveauxBase[0];
+  // Toutes les sections de ce niveau
+  const toutesLesSections = getSections(niveauActif);
+  return `
+  <div style="background:var(--sky);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:14px">
+    <i class="ti ti-info-circle" aria-hidden="true"></i>
+    Vous voyez ici les difficultés de <strong>toutes les sections</strong> du même niveau — pas seulement vos classes.
+  </div>
+  <div class="promo-filter">
+    ${niveauxBase.map(nb=>`<button class="pf-btn ${niveauActif===nb?"active":""}" data-pfilter="${nb}">${nb} (toutes sections)</button>`).join("")}
+  </div>
+  ${toutesLesSections.map(section=>{
+    const eleves = DB.users.filter(e=>e.role==="eleve"&&e.classe===section);
+    const isMaClasse = (u.classes||[]).includes(section);
+    if(!eleves.length) return "";
+    const enDiff = eleves.filter(e=>(e.diffs||[]).length>0).length;
+    const vals2 = eleves.map(e=>{const vs=Object.values(e.matieres||{});return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length):0;});
+    const moy2 = vals2.length?Math.round(vals2.reduce((a,b)=>a+b,0)/vals2.length):0;
+    return `<div class="card" style="${isMaClasse?"border-left:3px solid var(--blue)":""}">
+      <div class="card-title">
+        <i class="ti ti-users" aria-hidden="true"></i> ${section}
+        ${isMaClasse?`<span class="badge badge-blue" style="margin-left:6px">Ma classe</span>`:""}
+        <span style="margin-left:auto;font-size:12px;font-weight:500;color:var(--text2)">${eleves.length} élève${eleves.length!==1?"s":""} · Moy. <strong style="color:${scoreColor(moy2)}">${moy2}%</strong> · ${enDiff} en difficulté</span>
+      </div>
+      ${eleves.slice(0,5).map(e=>{
+        const avg3=Object.values(e.matieres||{}).length?Math.round(Object.values(e.matieres||{}).reduce((a,b)=>a+b,0)/Object.values(e.matieres||{}).length):0;
+        return `<div class="row">
+          <div class="avatar">${ini(e.nom)}</div>
+          <div style="flex:1"><div style="font-weight:500">${e.nom}</div>
+          <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).join(", ")||"Aucune difficulté"}</div></div>
+          ${scoreBadge(avg3)}
+          <div class="bar-bg"><div class="bar-fill" style="width:${avg3}%;background:${scoreColor(avg3)}"></div></div>
+          <div style="font-size:12px;font-weight:600;color:${scoreColor(avg3)};width:34px;text-align:right">${avg3}%</div>
+        </div>`;
+      }).join("")}
+      ${eleves.length>5?`<div style="font-size:12px;color:var(--text2);margin-top:8px;padding-top:6px;border-top:1px solid var(--border)">+${eleves.length-5} autres élèves dans cette section</div>`:""}
+    </div>`;
+  }).join("")||`<div class="card"><div style="font-size:13px;color:var(--text2)">Aucun élève inscrit pour ce niveau.</div></div>`}`;
+}
+
+function renderProfAlerts(){
+  const u = S.user;
+  const mesClasses = u.classes||[];
+
+  // Tous les niveaux de base enseignés par ce prof (ex: ["6ème","3ème","Terminale"])
+  const niveauxBase = [...new Set(mesClasses.map(c=>getNiveauBase(c)))];
+
+  // Pour chaque niveau de base : tous les élèves de l'école (toutes sections)
+  const tousEleves = DB.users.filter(e=>e.role==="eleve"&&niveauxBase.includes(getNiveauBase(e.classe)));
+
+  // Auto-détection des difficultés par scores
+  tousEleves.forEach(e=>{
+    const faibles=Object.entries(e.matieres||{}).filter(([m,s])=>s<50&&s>0).map(([m])=>m);
+    faibles.forEach(m=>{ if(!(e.diffs||[]).includes(m)){if(!e.diffs)e.diffs=[];e.diffs.push(m);} });
+    if(e.historique&&e.historique.length>=2){
+      const prev=e.historique[e.historique.length-2].scores||{};
+      Object.entries(e.matieres||{}).forEach(([m,s])=>{
+        const old=prev[m]||0;
+        if(old>0&&s<old-10&&!(e.diffs||[]).includes(m+" (régression)")){
+          if(!e.diffs)e.diffs=[];e.diffs.push(m+" (régression)");
+        }
+      });
+    }
+  });
+  saveDB();
+
+  // Filtre actif : un niveau de base précis, ou tous
+  const filtre = S.promoFilter; // null = tous les niveaux, sinon un niveauBase ex "6ème"
+  const elevesVus = filtre ? tousEleves.filter(e=>getNiveauBase(e.classe)===filtre) : tousEleves;
+
+  // Top difficultés sur tous les élèves vus
+  const diffCount={};
+  elevesVus.forEach(e=>(e.diffs||[]).forEach(d=>{ diffCount[d]=(diffCount[d]||0)+1; }));
+  const topDiffs=Object.entries(diffCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  const avg = e=>{const vs=Object.values(e.matieres||{});return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length):0;};
+  const critiques   = elevesVus.filter(e=>avg(e)<50);
+  const attention   = elevesVus.filter(e=>avg(e)>=50&&avg(e)<70&&(e.diffs||[]).length>0);
+  const progression = elevesVus.filter(e=>(e.progression||0)>=5);
+
+  // Helper badge classe
+  const badgeClasse = e => {
+    const isMa = mesClasses.includes(e.classe);
+    return isMa
+      ? `<span class="badge badge-blue" style="font-size:10px">Ma classe</span>`
+      : `<span style="font-size:11px;color:var(--text3);font-weight:500">(${e.classe})</span>`;
+  };
+
+  return `
+  <div style="background:var(--sky);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:14px">
+    <i class="ti ti-cpu" aria-hidden="true"></i>
+    <strong>Détection automatique IA</strong> — Vous voyez <strong>tous les élèves</strong> de vos niveaux enseignés (${niveauxBase.join(", ")}), toutes sections confondues. Les élèves hors de vos classes sont indiqués entre parenthèses.
+  </div>
+
+  <!-- Filtre par niveau de base -->
+  <div class="promo-filter" style="margin-bottom:14px">
+    <button class="pf-btn ${!filtre?"active":""}" data-pfilter="">Tous mes niveaux</button>
+    ${niveauxBase.map(nb=>`<button class="pf-btn ${filtre===nb?"active":""}" data-pfilter="${nb}">${nb} (toutes sections)</button>`).join("")}
+  </div>
+
+  <!-- Top difficultés communes -->
+  ${topDiffs.length?`
+  <div class="card" style="border-left:4px solid var(--blue)">
+    <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Difficultés les plus répandues
+      <span style="font-weight:400;font-size:12px;margin-left:6px">— toutes sections · ${elevesVus.length} élèves analysés</span>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Ces matières concentrent le plus de difficultés. Partagez un contenu ciblé pour aider tous les élèves concernés.</div>
+    ${topDiffs.map(([diff,count])=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <span style="font-weight:600;font-size:13px;flex:1">${diff}</span>
+      <div class="bar-bg" style="width:100px"><div class="bar-fill" style="width:${Math.min(count*15,100)}%;background:var(--red)"></div></div>
+      <span style="font-size:12px;font-weight:700;color:var(--red);width:64px;text-align:right">${count} élève${count>1?"s":""}</span>
+      <button class="btn btn-sm btn-primary" style="font-size:11px;padding:3px 10px" data-quickshare="${diff}"><i class="ti ti-send" aria-hidden="true"></i> Partager</button>
+    </div>`).join("")}
+  </div>`:""}
+
+  <!-- Critiques -->
+  ${critiques.length?`
+  <div class="card" style="border-left:4px solid var(--red)">
+    <div class="card-title" style="color:var(--red)">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i> Situation critique — moyenne &lt; 50%
+      <span style="margin-left:auto;font-size:12px;font-weight:500">${critiques.length} élève${critiques.length>1?"s":""}</span>
+    </div>
+    ${critiques.map(e=>`
+    <div class="row">
+      <div class="avatar" style="background:var(--red-lt);color:var(--red)">${ini(e.nom)}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-weight:600">${e.nom}</span>
+          ${badgeClasse(e)}
+        </div>
+        <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).slice(0,3).join(", ")||"—"}</div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--red)">${avg(e)}%</div>
+    </div>`).join("")}
+  </div>`:""}
+
+  <!-- Attention -->
+  ${attention.length?`
+  <div class="card" style="border-left:4px solid var(--amber)">
+    <div class="card-title" style="color:var(--amber)">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i> À surveiller — niveau fragile
+      <span style="margin-left:auto;font-size:12px;font-weight:500">${attention.length} élève${attention.length>1?"s":""}</span>
+    </div>
+    ${attention.map(e=>`
+    <div class="row">
+      <div class="avatar" style="background:var(--amber-lt);color:var(--amber)">${ini(e.nom)}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-weight:600">${e.nom}</span>
+          ${badgeClasse(e)}
+        </div>
+        <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).slice(0,3).join(", ")||"—"}</div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--amber)">${avg(e)}%</div>
+    </div>`).join("")}
+  </div>`:""}
+
+  <!-- Progression -->
+  ${progression.length?`
+  <div class="card" style="border-left:4px solid var(--green)">
+    <div class="card-title" style="color:var(--green)">
+      <i class="ti ti-trending-up" aria-hidden="true"></i> En progression
+      <span style="margin-left:auto;font-size:12px;font-weight:500">${progression.length} élève${progression.length>1?"s":""}</span>
+    </div>
+    ${progression.map(e=>`
+    <div class="row">
+      <div class="avatar" style="background:var(--green-lt);color:var(--green)">${ini(e.nom)}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-weight:600">${e.nom}</span>
+          ${badgeClasse(e)}
+        </div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--green)">+${e.progression}%</div>
+    </div>`).join("")}
+  </div>`:""}
+
+  ${!critiques.length&&!attention.length&&!progression.length?`
+  <div class="card"><div style="font-size:13px;color:var(--text2)"><i class="ti ti-circle-check" style="color:var(--green)" aria-hidden="true"></i> Aucune alerte pour la sélection actuelle.</div></div>`:""}`;
+}
+
+function renderProfShare(){
+  const u = S.user;
+  // Toutes les sections des niveaux du prof (ses classes + autres sections du même niveau)
+  const niveauxBase = [...new Set((u.classes||[]).map(c=>getNiveauBase(c)))];
+  const toutesClassesDuNiveau = NIVEAUX.filter(n=>niveauxBase.includes(getNiveauBase(n)));
+  // On garde aussi les classes du prof en priorité (dans la liste)
+  const mesClasses = u.classes||[];
+  const autresClasses = toutesClassesDuNiveau.filter(c=>!mesClasses.includes(c));
+  const toutesClasses = [...mesClasses, ...autresClasses];
+
+  // Matières selon la première classe sélectionnée dans sh-classe (on prend la première par défaut)
+  const classeDefaut = mesClasses[0]||toutesClasses[0]||"3ème";
+
+  // Historique : contenus partagés par ce prof (toutes classes du niveau)
+  const mesContenus = DB.contenus.filter(c=>c.auteur===u.nom||toutesClasses.includes(c.classe));
+
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-send" aria-hidden="true"></i> Partager un contenu pédagogique</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Le contenu sera visible par tous les élèves de la classe ciblée dans leur tableau de bord.</div>
+
+    <div class="field"><label>Classe cible</label>
+      <select id="sh-classe">
+        <optgroup label="Mes classes">
+          ${mesClasses.map(c=>`<option value="${c}">${c}</option>`).join("")}
+        </optgroup>
+        ${autresClasses.length?`<optgroup label="Autres sections (même niveau)">
+          ${autresClasses.map(c=>`<option value="${c}">${c}</option>`).join("")}
+        </optgroup>`:""}
+      </select>
+    </div>
+    <div class="field"><label>Matière</label>
+      <select id="sh-matiere">
+        ${getMatieres(classeDefaut).map(m=>`<option>${m}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field"><label>Titre</label><input id="sh-titre" placeholder="Ex: Révision équations — Exercices niveau 2"/></div>
+    <div class="field"><label>Destinataires</label>
+      <select id="sh-dest"><option>Toute la classe</option><option>Élèves en difficulté uniquement</option><option>Élèves avancés</option></select>
+    </div>
+    <div class="field"><label>Contenu / Description</label><textarea id="sh-content" placeholder="Coller le contenu, un lien ou une description…"></textarea></div>
+    <div class="field">
+      <label>Document PDF <span style="font-weight:400;color:var(--text3)">(optionnel)</span></label>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <label style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--bg);border:1.5px dashed var(--border2);border-radius:var(--radius);cursor:pointer;font-size:13px;color:var(--blue);font-weight:500;transition:all .15s" id="pdf-upload-label">
+          <i class="ti ti-file-upload" aria-hidden="true"></i> Joindre un PDF
+          <input type="file" id="sh-pdf" accept=".pdf" style="display:none"/>
+        </label>
+        <span id="pdf-name" style="font-size:12px;color:var(--text2)"></span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-primary" id="btn-share">Partager à la classe</button>
+      <button class="btn btn-sm" data-action="gen-contenu">Générer avec l'IA ↗</button>
+    </div>
+    ${S.partageSuccess?`<div style="margin-top:10px;color:var(--green);font-size:13px;font-weight:600"><i class="ti ti-check" aria-hidden="true"></i> Contenu partagé avec succès !</div>`:""}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-history" aria-hidden="true"></i> Contenus partagés récemment</div>
+    ${mesContenus.map(c=>{
+      const isAutreSection = !mesClasses.includes(c.classe);
+      return `<div class="row">
+        <i class="ti ${c.pdf?'ti-file-type-pdf':'ti-file-text'}" style="font-size:20px;color:${c.pdf?'var(--red)':'var(--blue)'}" aria-hidden="true"></i>
+        <div style="flex:1">
+          <div style="font-weight:600">${c.titre}</div>
+          <div style="font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            ${c.matiere} · ${c.classe} · ${c.dest} · ${c.date}
+            ${isAutreSection?`<span class="badge badge-warn" style="font-size:10px">Autre section</span>`:`<span class="badge badge-blue" style="font-size:10px">Ma classe</span>`}
+          </div>
+          ${c.pdf?`<a href="${c.pdf.url}" download="${c.pdf.name}" style="font-size:11px;color:var(--blue);display:inline-flex;align-items:center;gap:3px;margin-top:3px"><i class="ti ti-download" aria-hidden="true"></i> ${c.pdf.name}</a>`:""}
+        </div>
+        <span class="badge badge-ok">Envoyé</span>
+      </div>`;
+    }).join("")||`<div style="font-size:13px;color:var(--text2)">Aucun contenu partagé pour le moment.</div>`}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECRÉTAIRE VIEWS
+// ══════════════════════════════════════════════════════════
+function renderSecretaire(){
+  return [renderSecDash, renderSecInscription, renderSecProfs, renderSecEleves, renderSecMatieres, renderAnnales][S.tab]();
+}
+
+function renderSecDash(){
+  const eleves = DB.users.filter(u=>u.role==="eleve");
+  const promos = [...new Set(eleves.map(e=>e.classe))];
+  const profs = DB.users.filter(u=>u.role==="prof");
+  return `
+  <div class="metrics">
+    <div class="metric"><div class="metric-val">${eleves.length}</div><div class="metric-lab">Élèves inscrits</div></div>
+    <div class="metric"><div class="metric-val">${profs.length}</div><div class="metric-lab">Professeurs</div></div>
+    <div class="metric"><div class="metric-val">${promos.length}</div><div class="metric-lab">Classes actives</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--red)">${eleves.filter(e=>(e.diffs||[]).length>0).length}</div><div class="metric-lab">En difficulté</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-building-school" aria-hidden="true"></i> Répartition par niveau</div>
+    ${NIVEAUX.map(n=>{
+      const cnt = eleves.filter(e=>e.classe===n).length;
+      if(!cnt) return "";
+      return `<div class="row"><div style="flex:1;font-weight:500">${n}</div>
+        <div class="bar-bg" style="width:120px;margin-right:8px"><div class="bar-fill" style="width:${Math.min(cnt*15,100)}%;background:var(--blue)"></div></div>
+        <div style="font-size:13px;font-weight:600;color:var(--blue);width:50px;text-align:right">${cnt} élève${cnt>1?"s":""}</div>
+      </div>`;
+    }).join("")}
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Élèves en difficulté (vue globale)</div>
+    ${eleves.filter(e=>(e.diffs||[]).length>0).slice(0,5).map(e=>`<div class="row">
+      <div class="avatar">${ini(e.nom)}</div>
+      <div style="flex:1"><div style="font-weight:500">${e.nom}</div><div style="font-size:11px;color:var(--text2)">${e.classe} — ${(e.diffs||[]).join(", ")}</div></div>
+    </div>`).join("")||`<div style="font-size:13px;color:var(--text2)">Aucun élève en difficulté détectée.</div>`}
+  </div>`;
+}
+
+function renderSecInscription(){
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user-plus" aria-hidden="true"></i> Inscrire un nouvel élève</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px;background:var(--sky);padding:10px 12px;border-radius:var(--radius)">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> 
+      En ajoutant l'élève ici, il sera présent dans la base de données et pourra créer son compte lors de sa première connexion.
+    </div>
+    <div class="err-msg" id="add-err">Veuillez remplir tous les champs obligatoires.</div>
+    <div class="ok-msg" id="add-ok">Élève inscrit avec succès ! Il peut maintenant créer son compte.</div>
+    <div class="field"><label>Prénom et nom de l'élève *</label><input id="add-nom" placeholder="Ex: Koffi Agossou"/></div>
+    <div class="field"><label>Niveau scolaire *</label>
+      <select id="add-classe">
+        <optgroup label="Primaire">${PRIMAIRE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Collège">${COLLEGE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Lycée">${LYCEE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+      </select>
+    </div>
+    <div class="field"><label>Identifiant de connexion *</label><input id="add-id" placeholder="Ex: koffi.agossou"/></div>
+    <div class="field"><label>Mot de passe provisoire *</label><input id="add-mdp" placeholder="Ex: benin2026"/></div>
+    <button class="btn btn-primary" id="btn-add-eleve" style="padding:10px 20px"><i class="ti ti-user-plus" aria-hidden="true"></i> Inscrire l'élève</button>
+  </div>`;
+}
+
+function renderSecEleves(){
+  const eleves = DB.users.filter(u=>u.role==="eleve");
+  const niveauActif = S.promoFilter || "Tous";
+  const filtres = ["Tous", ...NIVEAUX.filter(n=>eleves.some(e=>e.classe===n))];
+  const filteredEleves = niveauActif==="Tous"?eleves:eleves.filter(e=>e.classe===niveauActif);
+  return `
+  <div class="promo-filter">
+    ${filtres.map(f=>`<button class="pf-btn ${(niveauActif||"Tous")===f?"active":""}" data-pfilter="${f}">${f}</button>`).join("")}
+  </div>
+  <div style="background:var(--sky);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:14px">
+    <i class="ti ti-info-circle" aria-hidden="true"></i>
+    Pour retirer un élève qui quitte l'école, cliquez sur <strong><i class="ti ti-trash"></i> Retirer</strong>. Toutes ses données seront supprimées de la base de cette école.
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> ${filteredEleves.length} élève${filteredEleves.length!==1?"s":""} — ${niveauActif}</div>
+    ${filteredEleves.length?filteredEleves.map(e=>{
+      const vals=Object.values(e.matieres||{});
+      const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+      return `<div class="row">
+        <div class="avatar">${ini(e.nom)}</div>
+        <div style="flex:1">
+          <div style="font-weight:600">${e.nom} <span class="badge badge-gray" style="font-size:10px">${e.classe}</span></div>
+          <div style="font-size:11px;color:var(--text2)">${(e.diffs||[]).length?("Difficultés : "+(e.diffs||[]).join(", ")):"Aucune difficulté détectée"}</div>
+        </div>
+        ${scoreBadge(avg)}
+        <button class="btn btn-sm btn-ghost" data-detail-eleve="${e.id}"><i class="ti ti-eye" aria-hidden="true"></i></button>
+        <button class="btn btn-sm btn-danger" data-confirm-del-user="${e.id}" data-del-nom="${e.nom}" data-del-role="élève" style="margin-left:4px"><i class="ti ti-user-minus" aria-hidden="true"></i> Retirer</button>
+      </div>`;
+    }).join(""):
+    `<div style="font-size:13px;color:var(--text2)">Aucun élève dans ce niveau.</div>`}
+  </div>`;
+}
+
+function renderSecMatieres(){
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-book" aria-hidden="true"></i> Matières standard par cycle</div>
+    <div style="margin-bottom:12px">
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">CP → CM2 (Primaire)</div>
+      <div>${MATIERES_BASE.primaire.map(m=>`<span class="tag">${m}</span>`).join("")}</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">6ème A→E → 3ème A→E (Collège)</div>
+      <div>${MATIERES_BASE.college.map(m=>`<span class="tag">${m}</span>`).join("")}<span class="tag" style="background:var(--amber-lt);color:var(--amber)">+ Allemand/Espagnol (4ème)</span></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-weight:600;margin-bottom:6px;font-size:13px">2nde A→D → Terminale A→D (Lycée)</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px">Séries A & B — Littéraires</div>
+          <div>${MATIERES_BASE.lycee_litt.map(m=>`<span class="tag" style="background:var(--amber-lt);color:var(--amber)">${m}</span>`).join("")}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">Séries C & D — Scientifiques</div>
+          <div>${MATIERES_BASE.lycee_sci.map(m=>`<span class="tag" style="background:var(--green-lt);color:var(--green)">${m}</span>`).join("")}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter une matière personnalisée</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Vous pouvez ajouter des matières spécifiques à votre école pour une classe ou section donnée. Elles s'ajouteront aux matières standard.</div>
+    <div class="field"><label>Classe cible</label>
+      <select id="cm-classe">
+        <optgroup label="Primaire">${PRIMAIRE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Collège">${COLLEGE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+        <optgroup label="Lycée">${LYCEE.map(n=>`<option>${n}</option>`).join("")}</optgroup>
+      </select>
+    </div>
+    <div class="field"><label>Nom de la matière</label><input id="cm-nom" placeholder="Ex: Informatique, Arts plastiques, EPS…"/></div>
+    <button class="btn btn-primary btn-sm" id="btn-add-mat"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter</button>
+    <div id="cm-ok" style="display:none;margin-top:8px;color:var(--green);font-size:12px">Matière ajoutée avec succès !</div>
+  </div>
+  ${(()=>{
+    const customs = Object.entries(DB.matieresCustom).filter(([,v])=>v.length>0);
+    if(!customs.length) return "";
+    return `<div class="card">
+      <div class="card-title"><i class="ti ti-settings" aria-hidden="true"></i> Matières personnalisées par classe</div>
+      ${customs.map(([niv,mats])=>`<div style="margin-bottom:10px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">${niv}</div>
+        <div>${mats.map(m=>`<span class="mat-chip">${m} <span class="rm" data-rm-mat="${niv}|${m}">×</span></span>`).join("")}</div>
+      </div>`).join("")}
+    </div>`;
+  })()}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ANNALES (partagé prof + secrétaire + élève)
+// ══════════════════════════════════════════════════════════
+function renderAnnales(){
+  const u = S.user;
+  const isSecr = u.role==="secretaire";
+  // Niveaux de base disponibles
+  const niveauxDispos = [...PRIMAIRE, ...COLLEGE_BASE, ...LYCEE_BASE];
+  const niveauActif = S.annalesNiveau || COLLEGE_BASE[2]; // "3ème" par défaut
+  const matieres = getMatieresByNiveau(niveauActif);
+  const matActif = S.annalesMat || matieres[0];
+  const annalesNiv = (DB.annales||{})[niveauActif]||{};
+  const annalesMat = annalesNiv[matActif]||[];
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-archive" aria-hidden="true"></i> Annales — Anciennes épreuves d'examens</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Retrouvez ici les sujets des années précédentes (BEPC, BAC, compositions) classés par niveau et matière.</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
+      <div style="min-width:140px">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Niveau</div>
+        ${niveauxDispos.map(n=>`<button class="btn btn-sm" data-ann-niv="${n}" style="display:block;width:100%;text-align:left;margin-bottom:4px;background:${S.annalesNiveau===n||(!S.annalesNiveau&&n===niveauActif)?"var(--blue)":"var(--bg)"};color:${S.annalesNiveau===n||(!S.annalesNiveau&&n===niveauActif)?"#fff":"var(--text)"}">${n}</button>`).join("")}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Matière</div>
+        <div class="promo-filter" style="margin-bottom:14px">
+          ${matieres.map(m=>`<button class="pf-btn ${matActif===m?"active":""}" data-ann-mat="${m}">${m}</button>`).join("")}
+        </div>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--blue)">
+          <div class="card-title"><i class="ti ti-book-2" aria-hidden="true"></i> ${matActif} — ${niveauActif} (${annalesMat.length} épreuve${annalesMat.length!==1?"s":""})</div>
+          ${annalesMat.length?annalesMat.map(a=>`<div class="row">
+            <div style="width:36px;height:36px;border-radius:8px;background:${a.type==="BAC"?"var(--amber-lt)":"var(--sky)"};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <span style="font-size:10px;font-weight:700;color:${a.type==="BAC"?"var(--amber)":"var(--blue)"}">${a.type}</span>
+            </div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:13px">${a.titre}</div>
+              <div style="font-size:11px;color:var(--text2)">${a.annee} · ${a.description||""}</div>
+            </div>
+            ${a.fichier?`<a href="${a.fichier.url}" download="${a.fichier.name}" class="btn btn-sm"><i class="ti ti-download" aria-hidden="true"></i> PDF</a>`:`<span style="font-size:11px;color:var(--text3);font-style:italic">Pas de fichier</span>`}
+            ${isSecr?`<button class="btn btn-sm btn-danger" data-rm-annale="${niveauActif}|${matActif}|${a.id}" style="margin-left:6px"><i class="ti ti-trash" aria-hidden="true"></i></button>`:""}
+          </div>`).join(""):
+          `<div style="font-size:13px;color:var(--text2);font-style:italic">Aucune annale disponible pour cette matière. ${isSecr?"Ajoutez-en ci-dessous.":""}</div>`}
+        </div>
+        ${isSecr?`<div class="card">
+          <div class="card-title"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter une annale — ${matActif} / ${niveauActif}</div>
+          <div class="field"><label>Titre de l'épreuve *</label><input id="ann-titre" placeholder="Ex: BEPC 2024 — Mathématiques"/></div>
+          <div style="display:flex;gap:10px">
+            <div class="field" style="flex:1"><label>Année *</label><input id="ann-annee" placeholder="2024" type="number" min="1990" max="2030"/></div>
+            <div class="field" style="flex:1"><label>Type</label>
+              <select id="ann-type"><option>BEPC</option><option>BAC</option><option>Composition</option><option>Devoir</option></select>
+            </div>
+          </div>
+          <div class="field"><label>Description</label><textarea id="ann-desc" placeholder="Description facultative…" style="min-height:52px"></textarea></div>
+          <div class="field">
+            <label>Fichier PDF <span style="font-weight:400;color:var(--text3)">(optionnel)</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--bg);border:1.5px dashed var(--border2);border-radius:var(--radius);cursor:pointer;font-size:13px;color:var(--blue);font-weight:500">
+              <i class="ti ti-file-upload" aria-hidden="true"></i> Joindre un PDF
+              <input type="file" id="ann-pdf" accept=".pdf" style="display:none"/>
+            </label>
+            <span id="ann-pdf-name" style="font-size:12px;color:var(--text2);margin-left:8px"></span>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-add-annale"><i class="ti ti-plus" aria-hidden="true"></i> Ajouter l'annale</button>
+          <div id="ann-ok" style="display:none;margin-top:8px;color:var(--green);font-size:12px">Annale ajoutée avec succès !</div>
+        </div>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECRÉTAIRE : GESTION DES PROFS
+// ══════════════════════════════════════════════════════════
+function renderSecProfs(){
+  const profs = DB.users.filter(u=>u.role==="prof");
+  return `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chalkboard" aria-hidden="true"></i> Ajouter un professeur</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px;background:var(--sky);padding:10px 12px;border-radius:var(--radius)">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Ajoutez un professeur. Il recevra ses identifiants et pourra se connecter directement.
+    </div>
+    <div class="err-msg" id="addprof-err">Veuillez remplir tous les champs obligatoires.</div>
+    <div class="ok-msg" id="addprof-ok">Professeur ajouté avec succès !</div>
+    <div class="field"><label>Prénom et nom *</label><input id="addprof-nom" placeholder="Ex: Prof. Sylvie Kinkpe"/></div>
+    <div class="field"><label>Adresse e-mail (identifiant) *</label><input id="addprof-id" type="email" placeholder="sylvie.kinkpe@edubenin.bj"/></div>
+    <div class="field"><label>Mot de passe provisoire *</label><input id="addprof-mdp" placeholder="Ex: prof2026"/></div>
+    <div class="field">
+      <label>Classes attribuées *</label>
+      <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius);padding:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">PRIMAIRE</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${PRIMAIRE.map(n=>`<label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" class="addprof-class" value="${n}"/>${n}</label>`).join("")}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">COLLÈGE</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${COLLEGE.map(n=>`<label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" class="addprof-class" value="${n}"/>${n}</label>`).join("")}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">LYCÉE <span style="font-weight:400;color:var(--text3)">(A&B = Littéraires · C&D = Scientifiques)</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${LYCEE.map(n=>{const s=getSection(n);const isSci=LYCEE_SCI.includes(s);return`<label style="display:inline-flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;color:${isSci?"var(--green)":"var(--amber)"}"><input type="checkbox" class="addprof-class" value="${n}"/>${n}</label>`;}).join("")}</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-add-prof" style="padding:10px 20px"><i class="ti ti-user-plus" aria-hidden="true"></i> Ajouter le professeur</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-list" aria-hidden="true"></i> Professeurs enregistrés (${profs.length})</div>
+    ${profs.length?profs.map(p=>`<div class="row">
+      <div class="avatar" style="background:#e8f5e9;color:var(--green)"><i class="ti ti-chalkboard" aria-hidden="true"></i></div>
+      <div style="flex:1">
+        <div style="font-weight:600">${p.nom}</div>
+        <div style="font-size:11px;color:var(--text2)">${p.id}</div>
+        <div style="margin-top:4px">${(p.classes||[]).map(c=>`<span class="tag" style="font-size:10px">${c}</span>`).join("")||"<span style='font-size:11px;color:var(--text3)'>Aucune classe</span>"}</div>
+      </div>
+      <button class="btn btn-sm btn-danger" data-rm-prof="${p.id}"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>`).join(""):
+    `<div style="font-size:13px;color:var(--text2)">Aucun professeur enregistré.</div>`}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// MESSAGERIE PROF ↔ ÉLÈVE
+// ══════════════════════════════════════════════════════════
+function renderMessagerie(){
+  const u = S.user;
+  const isProf = u.role==="prof";
+  const myMsgs = (DB.messages||[]).filter(m=> isProf ? m.de===u.id : m.a===u.id);
+  const unread = myMsgs.filter(m=>!m.lu).length;
+
+  // Élèves du prof pour la liste de destinataires
+  const mesEleves = isProf ? DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe)) : [];
+
+  const inbox = `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-inbox" aria-hidden="true"></i> Messages reçus ${unread>0?`<span class="badge badge-danger" style="margin-left:6px">${unread} non lu${unread>1?"s":""}</span>`:"<span class='badge badge-ok' style='margin-left:6px'>Tout lu</span>"}</div>
+    ${myMsgs.length===0?`<div style="font-size:13px;color:var(--text2);font-style:italic">Aucun message pour l'instant.</div>`:""}
+    ${myMsgs.map(m=>`
+    <div class="row" style="background:${m.lu?"":"var(--sky)"};border-radius:var(--radius);padding:10px 12px;margin-bottom:4px;border:1px solid ${m.lu?"var(--border)":"var(--blue)"}" data-read-msg="${m.id}">
+      <div class="avatar" style="background:${isProf?"var(--green-lt)":"var(--sky)"};color:${isProf?"var(--green)":"var(--blue)"}">${ini(isProf?m.aNom:m.deNom)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:${m.lu?500:700};font-size:13px">${isProf?("À : "+m.aNom):("De : "+m.deNom)}</span>
+          ${!m.lu?`<span class="badge badge-blue">Nouveau</span>`:""}
+          <span style="font-size:11px;color:var(--text3);margin-left:auto">${m.date}</span>
+        </div>
+        <div style="font-weight:600;font-size:13px;margin-top:2px">${m.sujet}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5">${m.corps}</div>
+      </div>
+    </div>`).join("")}
+  </div>`;
+
+  const compose = isProf ? `
+  <div class="card">
+    <div class="card-title"><i class="ti ti-pencil-plus" aria-hidden="true"></i> Nouveau message à un élève</div>
+    <div class="field"><label>Destinataire *</label>
+      <select id="msg-dest-id">
+        <option value="">— Choisir un élève —</option>
+        ${mesEleves.map(e=>`<option value="${e.id}" data-nom="${e.nom}">${e.nom} (${e.classe})</option>`).join("")}
+      </select>
+    </div>
+    <div class="field"><label>Sujet *</label><input id="msg-sujet" placeholder="Ex: Félicitations pour vos progrès en Mathématiques"/></div>
+    <div class="field"><label>Message *</label><textarea id="msg-corps" placeholder="Bonjour, je voulais vous informer…" style="min-height:100px"></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-primary" id="btn-send-msg"><i class="ti ti-send" aria-hidden="true"></i> Envoyer</button>
+      <button class="btn btn-sm" id="btn-msg-ai-suggest"><i class="ti ti-sparkles" aria-hidden="true"></i> Suggérer avec l'IA</button>
+    </div>
+    <div id="msg-ok" class="ok-msg" style="display:none;margin-top:8px">Message envoyé avec succès !</div>
+  </div>` : `<div class="card" style="border-left:3px solid var(--blue)"><div style="font-size:13px;color:var(--text2)"><i class="ti ti-info-circle" style="color:var(--blue)" aria-hidden="true"></i> Les messages sont envoyés par vos professeurs. Revenez ici régulièrement.</div></div>`;
+
+  return `
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-sm ${S.msgTab==="inbox"?"btn-primary":""}" data-msgtab="inbox"><i class="ti ti-inbox" aria-hidden="true"></i> Boîte de réception${unread>0?` (${unread})`:""}</button>
+    ${isProf?`<button class="btn btn-sm ${S.msgTab==="compose"?"btn-primary":""}" data-msgtab="compose"><i class="ti ti-pencil-plus" aria-hidden="true"></i> Nouveau message</button>`:""}
+  </div>
+  ${S.msgTab==="inbox"?inbox:compose}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// EXERCICES GÉNÉRÉS DYNAMIQUEMENT PAR L'IA
+// ══════════════════════════════════════════════════════════
+async function generateAiExercice(){
+  const u = S.user;
+  if(!S.selMatiere) return;
+  S.aiGenExLoading=true;
+  S.aiGenEx=null;
+  S.aiGenExChosen=null;
+  render();
+  const score = u.matieres?.[S.selMatiere]||0;
+  const niveau = score<40?"débutant (notions de base, questions simples)":score<65?"intermédiaire (application directe du cours)":"avancé (raisonnement, cas complexes)";
+  try{
+    const res = await callIA(
+      `Tu es un générateur d'exercices pédagogiques pour EduBénin IA, plateforme béninoise (CP→Terminale). Génère un QCM à choix unique. Réponds UNIQUEMENT en JSON valide, sans texte avant ou après, sans balises markdown. Format exact : {"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explication":"..."}. L'index "correct" est 0-indexé. L'explication doit être pédagogique et encourageante (2 phrases max).`,
+      `Génère un exercice de ${S.selMatiere} pour un élève de ${u.classe} de niveau ${niveau}. Difficultés connues : ${(u.diffs||[]).join(", ")||"aucune"}. L'exercice doit être adapté exactement à ce niveau : ni trop facile, ni trop difficile.`
+    );
+    if(res){
+      try{
+        const clean = res.replace(/```json|```/g,"").trim();
+        const parsed = JSON.parse(clean);
+        if(parsed.question&&parsed.options&&parsed.correct!==undefined) S.aiGenEx=parsed;
+        else S.aiGenEx=null;
+      } catch(e){ S.aiGenEx=null; }
+    }
+  } catch(e){ S.aiGenEx=null; }
+  S.aiGenExLoading=false;
+  render();
+}
+
+// ══════════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════════
+function renderModal(){
+  if(S.modal==="confirm-del-user"){
+    const {id, nom, role} = S.modalData;
+    return `<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box" style="max-width:400px">
+      <div class="modal-head">
+        <div class="modal-title" style="color:var(--red)"><i class="ti ti-alert-circle" aria-hidden="true"></i> Retirer un ${role}</div>
+        <button class="btn btn-sm" data-close-modal>✕</button>
+      </div>
+      <div style="text-align:center;padding:16px 0 8px">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--red-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;color:var(--red)">
+          <i class="ti ti-user-minus" aria-hidden="true"></i>
+        </div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:8px">${nom}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">
+          Cet ${role} quitte l'école. Sa fiche, ses scores, ses messages et toutes ses données seront <strong style="color:var(--red)">définitivement supprimés</strong> de la base de données de cette école.<br><br>
+          <span style="font-size:12px;color:var(--text3)">Cette action est irréversible.</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-sm" data-close-modal style="flex:1">Annuler</button>
+        <button class="btn btn-danger" id="btn-confirm-del" style="flex:1"><i class="ti ti-trash" aria-hidden="true"></i> Confirmer le retrait</button>
+      </div>
+    </div>
+    </div>`;
+  }
+  if(S.modal==="eleve-detail"){
+    const e = DB.users.find(u=>u.id===S.modalData.id);
+    if(!e) return "";
+    const vals = Object.values(e.matieres||{});
+    const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    return `<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title"><i class="ti ti-user-circle" style="color:var(--blue)" aria-hidden="true"></i> ${e.nom}</div>
+        <button class="btn btn-sm" data-close-modal>✕</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div class="avatar" style="width:46px;height:46px;font-size:16px">${ini(e.nom)}</div>
+        <div><div style="font-weight:600">${e.nom}</div><div style="font-size:12px;color:var(--text2)">${e.classe} · Score moyen : <strong style="color:${scoreColor(avg)}">${avg}%</strong></div></div>
+      </div>
+      ${Object.entries(e.matieres||{}).map(([m,s])=>`
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${m}</span><span style="font-weight:600;color:${scoreColor(s)}">${s}%</span></div>
+        <div style="background:var(--bg);border-radius:4px;height:7px"><div style="height:7px;border-radius:4px;background:${scoreColor(s)};width:${s}%"></div></div>
+      </div>`).join("")}
+      ${(e.diffs||[]).length?`<div style="margin-top:14px">
+        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--text2)">DIFFICULTÉS DÉTECTÉES</div>
+        ${(e.diffs||[]).map(d=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)"><i class="ti ti-alert-triangle" style="color:var(--amber)" aria-hidden="true"></i>${d}</div>`).join("")}
+      </div>`:""}
+      <button class="btn btn-sm" data-close-modal style="margin-top:16px;width:100%">Fermer</button>
+    </div>
+    </div>`;
+  }
+  return "";
+}
+
+// ══════════════════════════════════════════════════════════
+// EVENT BINDING
+// ══════════════════════════════════════════════════════════
+function attachAll(){
+  // ── LOGIN ──
+  document.querySelectorAll("[data-lrole]").forEach(el=>{
+    el.addEventListener("click",()=>{S.loginRole=el.dataset.lrole;render()});
+  });
+  document.getElementById("btn-login")?.addEventListener("click",doLogin);
+  document.getElementById("inp-mdp")?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+  document.getElementById("btn-go-register")?.addEventListener("click",()=>{
+    S.screen="register";S.regRole="eleve";S.selNiveauxReg=[];S.selNiveauReg=null;render();
+  });
+  document.getElementById("btn-forgot")?.addEventListener("click",()=>{S.screen="forgot";render();});
+  document.getElementById("btn-forgot-send")?.addEventListener("click",doForgot);
+  document.getElementById("btn-back-login")?.addEventListener("click",()=>{S.screen="login";render();});
+
+  // ── REGISTER ──
+  document.querySelectorAll("[data-rrole]").forEach(el=>{
+    el.addEventListener("click",()=>{S.regRole=el.dataset.rrole;S.selNiveauxReg=[];S.selNiveauReg=null;render()});
+  });
+  document.querySelectorAll(".niv-btn").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const n=el.dataset.niv;
+      if(el.dataset.multi==="1"){
+        if(S.selNiveauxReg.includes(n)) S.selNiveauxReg=S.selNiveauxReg.filter(x=>x!==n);
+        else S.selNiveauxReg.push(n);
+      } else {
+        S.selNiveauReg=n;
+      }
+      document.querySelectorAll(".niv-btn").forEach(b=>{
+        const bn=b.dataset.niv;
+        b.classList.toggle("sel",el.dataset.multi==="1"?S.selNiveauxReg.includes(bn):S.selNiveauReg===bn);
+      });
+    });
+  });
+  document.querySelectorAll("[data-selmat]").forEach(el=>{
+    el.addEventListener("click",()=>{S.selMatiere=el.dataset.selmat;S.exIdx=0;S.chosenAns=null;S.aiExercice=null;render();});
+  });
+  document.getElementById("btn-register")?.addEventListener("click",doRegister);
+  document.getElementById("btn-go-login")?.addEventListener("click",()=>{S.screen="login";render()});
+
+  // ── APP ──
+  document.getElementById("btn-logout")?.addEventListener("click",()=>{
+    S={...S,screen:"login",user:null,tab:0,chatMsgs:[],aiSummary:null,partageSuccess:false,modal:null,promoFilter:null};render();
+  });
+  document.querySelectorAll("[data-tab]").forEach(el=>{
+    el.addEventListener("click",()=>{S.tab=parseInt(el.dataset.tab);S.chosenAns=null;S.aiExercice=null;S.selMatiere=null;S.exIdx=0;S.partageSuccess=false;S.aiGenEx=null;S.aiGenExChosen=null;S.msgTab="inbox";S.selCoursMatiere=null;S.coursContenu=null;S.coursLoading=false;render()});
+  });
+  document.querySelectorAll("[data-action]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const a=el.dataset.action;
+      if(a==="goto-ex"){S.tab=1;S.chosenAns=null;render();}
+      if(a==="goto-chat"){S.tab=2;render();}
+      if(a==="next-ex"){S.exIdx++;S.chosenAns=null;S.aiExercice=null;render();}
+      if(a==="back-mat"){S.selMatiere=null;S.chosenAns=null;S.aiExercice=null;S.aiGenEx=null;S.aiGenExChosen=null;S.exIdx=0;render();}
+      if(a==="gen-contenu") generateContenuIA();
+    });
+  });
+  document.querySelectorAll("[data-pfilter]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.promoFilter=(!el.dataset.pfilter||el.dataset.pfilter==="__all__")?null:el.dataset.pfilter;render();
+    });
+  });
+  document.querySelectorAll("[data-choice]").forEach(el=>{
+    if(S.chosenAns===null){
+      el.addEventListener("click",()=>{
+        const chosen=parseInt(el.dataset.choice);
+        S.chosenAns=chosen;
+        // Update student score after answering
+        if(S.user&&S.selMatiere){
+          const exos=DB.exercices.filter(e=>e.classe===S.user.classe&&e.matiere===S.selMatiere);
+          const ex=exos[S.exIdx%exos.length];
+          const correct=chosen===ex.correct;
+          const u=DB.users.find(u=>u.id===S.user.id);
+          if(u){
+            if(!u.matieres) u.matieres={};
+            const cur=u.matieres[S.selMatiere]||0;
+            // Each exercise: +8 if correct, -4 if wrong, capped 0-100
+            const newScore = Math.min(100,Math.max(0,cur+(correct?8:-4)));
+            u.matieres[S.selMatiere]=newScore;
+            u.exercices=(u.exercices||0)+1;
+            // Add difficulty if wrong
+            if(!correct&&ex.titre&&!(u.diffs||[]).includes(ex.titre)){
+              if(!u.diffs) u.diffs=[];
+              u.diffs.push(ex.titre);
+            }
+            // Remove from diffs if now succeeding (score >= 70)
+            if(correct&&newScore>=70){
+              u.diffs=(u.diffs||[]).filter(d=>d!==ex.titre&&d!==S.selMatiere);
+            }
+            // Update avg score
+            const vals=Object.values(u.matieres);
+            const newAvg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+            const oldAvg=u.score||0;
+            u.progression=(u.progression||0)+(newAvg-oldAvg);
+            u.score=newAvg;
+            // Update historique — update last week entry
+            if(!u.historique) u.historique=[];
+            const lastHist = u.historique[u.historique.length-1];
+            if(lastHist){
+              if(!lastHist.scores) lastHist.scores={};
+              lastHist.scores[S.selMatiere]=newScore;
+            }
+            saveDB();
+            S.user=u;
+          }
+        }
+        render();loadAiExercice();
+      });
+    }
+  });
+
+  // ── CHAT ──
+  const ci=document.getElementById("chat-inp");
+  document.getElementById("btn-send")?.addEventListener("click",sendChat);
+  ci?.addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});
+  document.querySelectorAll("[data-quick]").forEach(el=>{
+    el.addEventListener("click",()=>{if(ci)ci.value=el.dataset.quick;sendChat();});
+  });
+  document.querySelectorAll("[data-revise]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.tab=2;render();
+      setTimeout(()=>{const i=document.getElementById("chat-inp");if(i)i.value=`Explique-moi ${el.dataset.revise} pour la classe de ${S.user.classe}`;},80);
+    });
+  });
+  document.querySelectorAll("[data-gen-ex]").forEach(el=>{
+    el.addEventListener("click",()=>sendPrompt?.(`Génère 3 exercices personnalisés pour ${el.dataset.genEx.split("|")[0]} sur : ${el.dataset.genEx.split("|")[1]}`));
+  });
+
+  // ── PARTAGE ──
+  document.getElementById("btn-share")?.addEventListener("click",doShare);
+
+  // ── SECRÉTAIRE : inscription ──
+  document.getElementById("btn-add-eleve")?.addEventListener("click",doAddEleve);
+
+  // ── SECRÉTAIRE : matières ──
+  document.getElementById("btn-add-mat")?.addEventListener("click",doAddMatiere);
+  document.querySelectorAll("[data-rm-mat]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const [niv,mat]=el.dataset.rmMat.split("|");
+      DB.matieresCustom[niv]=(DB.matieresCustom[niv]||[]).filter(m=>m!==mat);
+      saveDB();render();
+    });
+  });
+
+  // ── SECRÉTAIRE : profs ──
+  document.getElementById("btn-add-prof")?.addEventListener("click",doAddProf);
+  // Bouton "Retirer" élève (nouvelle modale)
+  document.querySelectorAll("[data-confirm-del-user]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.modal="confirm-del-user";
+      S.modalData={id:el.dataset.confirmDelUser, nom:el.dataset.delNom, role:el.dataset.delRole};
+      render();
+    });
+  });
+  // Bouton "Retirer" prof (même modale)
+  document.querySelectorAll("[data-rm-prof]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const prof = DB.users.find(u=>u.id===el.dataset.rmProf);
+      if(!prof) return;
+      S.modal="confirm-del-user";
+      S.modalData={id:prof.id, nom:prof.nom, role:"professeur"};
+      render();
+    });
+  });
+  // Confirmation effective de suppression
+  document.getElementById("btn-confirm-del")?.addEventListener("click",()=>{
+    const {id} = S.modalData;
+    if(!id) return;
+    // Supprimer l'utilisateur
+    DB.users = DB.users.filter(u=>u.id!==id);
+    // Nettoyer les messages liés
+    if(DB.messages) DB.messages = DB.messages.filter(m=>m.de!==id&&m.a!==id);
+    saveDB();
+    S.modal=null; S.modalData={};
+    render();
+  });
+
+  // ── PERFORMANCES ──
+  document.querySelectorAll("[data-perf-eleve]").forEach(el=>{
+    el.addEventListener("click",()=>{S.perfEleveId=el.dataset.perfEleve;S.perfMatiere=null;render();});
+  });
+  document.querySelectorAll("[data-perf-mat]").forEach(el=>{
+    el.addEventListener("click",()=>{S.perfMatiere=el.dataset.perfMat;render();});
+  });
+
+  // ── ANNALES ──
+  document.querySelectorAll("[data-ann-niv]").forEach(el=>{
+    el.addEventListener("click",()=>{S.annalesNiveau=el.dataset.annNiv;S.annalesMat=null;render();});
+  });
+  document.querySelectorAll("[data-ann-mat]").forEach(el=>{
+    el.addEventListener("click",()=>{S.annalesMat=el.dataset.annMat;render();});
+  });
+  document.getElementById("btn-add-annale")?.addEventListener("click",doAddAnnale);
+  document.getElementById("ann-pdf")?.addEventListener("change",e=>{
+    const f=e.target.files?.[0];
+    const nm=document.getElementById("ann-pdf-name");
+    if(nm) nm.textContent=f?f.name:"";
+  });
+  document.querySelectorAll("[data-rm-annale]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const [niv,mat,id]=el.dataset.rmAnnale.split("|");
+      if(!DB.annales) DB.annales={};
+      if(!DB.annales[niv]) DB.annales[niv]={};
+      if(!DB.annales[niv][mat]) DB.annales[niv][mat]=[];
+      DB.annales[niv][mat]=DB.annales[niv][mat].filter(a=>a.id!==id);
+      saveDB();render();
+    });
+  });
+
+  // ── MOT DE PASSE : afficher/masquer ──
+  document.querySelectorAll(".pw-eye").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const inp=document.getElementById(btn.dataset.eye);
+      if(!inp) return;
+      const show = inp.type==="password";
+      inp.type = show?"text":"password";
+      btn.querySelector("i").className = show?"ti ti-eye-off":"ti ti-eye";
+    });
+  });
+
+  // ── MODALS ──
+  document.querySelectorAll("[data-detail-eleve]").forEach(el=>{
+    el.addEventListener("click",()=>{S.modal="eleve-detail";S.modalData={id:el.dataset.detailEleve};render();});
+  });
+  document.querySelectorAll("[data-close-modal]").forEach(el=>{
+    el.addEventListener("click",()=>{S.modal=null;S.modalData={};render();});
+  });
+  document.getElementById("modal-overlay")?.addEventListener("click",e=>{
+    if(e.target.id==="modal-overlay"){S.modal=null;S.modalData={};render();}
+  });
+
+  // ── RACCOURCI PARTAGE DEPUIS ALERTES ──
+  document.querySelectorAll("[data-quickshare]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.tab=5; // tab Partager
+      S.partageSuccess=false;
+      render();
+      // Pré-remplir la matière après render
+      setTimeout(()=>{
+        const sel=document.getElementById("sh-matiere");
+        if(sel){
+          const diff=el.dataset.quickshare;
+          for(const opt of sel.options){ if(opt.value.toLowerCase().includes(diff.toLowerCase())||diff.toLowerCase().includes(opt.value.toLowerCase())){sel.value=opt.value;break;} }
+        }
+        const destSel=document.getElementById("sh-dest");
+        if(destSel) destSel.value="Élèves en difficulté uniquement";
+      },80);
+    });
+  });
+
+  // ── COURS ADAPTATIFS ──
+  document.querySelectorAll("[data-cours-mat]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      S.selCoursMatiere=el.dataset.coursMat;
+      S.coursContenu=null;
+      S.coursLoading=false;
+      render();
+    });
+  });
+  document.getElementById("btn-back-cours")?.addEventListener("click",()=>{
+    S.selCoursMatiere=null;S.coursContenu=null;S.coursLoading=false;render();
+  });
+  document.getElementById("btn-gen-cours")?.addEventListener("click",()=>generateCoursAdaptatif());
+  document.getElementById("btn-regen-cours")?.addEventListener("click",()=>generateCoursAdaptatif());
+
+  // ── MESSAGERIE ──
+  document.querySelectorAll("[data-msgtab]").forEach(el=>{
+    el.addEventListener("click",()=>{S.msgTab=el.dataset.msgtab;render();});
+  });
+  document.querySelectorAll("[data-read-msg]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const msg=(DB.messages||[]).find(m=>m.id===el.dataset.readMsg);
+      if(msg){msg.lu=true;saveDB();}
+    });
+  });
+  document.getElementById("btn-send-msg")?.addEventListener("click",doSendMsg);
+  document.getElementById("btn-msg-ai-suggest")?.addEventListener("click",doAiMsgSuggest);
+
+  // ── EXERCICE IA GÉNÉRATIF ──
+  document.getElementById("btn-gen-ai-ex")?.addEventListener("click",()=>generateAiExercice());
+  document.querySelectorAll("[data-aigen-choice]").forEach(el=>{
+    if(S.aiGenExChosen===null){
+      el.addEventListener("click",()=>{
+        const chosen=parseInt(el.dataset.aigenChoice);
+        S.aiGenExChosen=chosen;
+        // Update score
+        if(S.user&&S.selMatiere&&S.aiGenEx){
+          const correct=chosen===S.aiGenEx.correct;
+          const u=DB.users.find(u=>u.id===S.user.id);
+          if(u){
+            if(!u.matieres) u.matieres={};
+            const cur=u.matieres[S.selMatiere]||0;
+            const newScore=Math.min(100,Math.max(0,cur+(correct?8:-4)));
+            u.matieres[S.selMatiere]=newScore;
+            u.exercices=(u.exercices||0)+1;
+            const vals=Object.values(u.matieres);
+            u.score=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+            saveDB();
+            S.user=u;
+          }
+        }
+        render();
+      });
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════════════════════════
+function doForgot(){
+  const email=(document.getElementById("forgot-email")?.value||"").trim();
+  const err=document.getElementById("forgot-err");
+  const ok=document.getElementById("forgot-ok");
+  const form=document.getElementById("forgot-form");
+  err.style.display="none";
+  if(!email){err.textContent="Veuillez entrer votre adresse e-mail.";err.style.display="block";return;}
+  const u=DB.users.find(u=>u.id===email);
+  if(!u){err.style.display="block";return;}
+  // Simulation envoi e-mail
+  form.style.display="none";
+  ok.style.display="block";
+}
+
+function doLogin(){
+  const id=(document.getElementById("inp-id")?.value||"").trim();
+  const mdp=(document.getElementById("inp-mdp")?.value||"").trim();
+  const err=document.getElementById("login-err");
+  const u=DB.users.find(u=>u.id===id&&u.mdp===mdp);
+  if(!u||(S.loginRole!=="secretaire"&&u.role!==S.loginRole)){err.style.display="block";return;}
+  err.style.display="none";
+  S.user=u;S.screen="app";S.tab=0;S.chatMsgs=[];S.aiSummary=null;S.promoFilter=null;
+  render();
+  loadAiSummary();
+}
+
+function doRegister(){
+  const nom=(document.getElementById("reg-nom")?.value||"").trim();
+  const id=(document.getElementById("reg-id")?.value||"").trim();
+  const mdp=(document.getElementById("reg-mdp")?.value||"").trim();
+  const err=document.getElementById("reg-err");
+  const ok=document.getElementById("reg-ok");
+  err.style.display="none";
+  if(!nom||!id||!mdp){err.textContent="Remplissez tous les champs obligatoires.";err.style.display="block";return;}
+  if(DB.users.find(u=>u.id===id)){err.textContent="Cette adresse e-mail est déjà utilisée.";err.style.display="block";return;}
+  if(S.regRole==="eleve"){
+    if(!S.selNiveauReg){err.textContent="Veuillez sélectionner votre niveau scolaire.";err.style.display="block";return;}
+    const codeEtab=(document.getElementById("reg-code-etab")?.value||"").trim();
+    const identifiant=(document.getElementById("reg-identifiant")?.value||"").trim();
+    const pin=(document.getElementById("reg-pin")?.value||"").trim();
+    if(!codeEtab){err.textContent="Veuillez saisir le code de votre établissement.";err.style.display="block";return;}
+    if(!identifiant){err.textContent="Veuillez saisir votre identifiant personnel.";err.style.display="block";return;}
+    if(!pin||pin.length<4){err.textContent="Veuillez saisir un code PIN d'au moins 4 caractères.";err.style.display="block";return;}
+    const mats=getMatieres(S.selNiveauReg);
+    const matObj={};
+    mats.forEach(m=>matObj[m]=0);
+    DB.users.push({id,nom,role:"eleve",classe:S.selNiveauReg,mdp,codeEtab,identifiant,pin,score:0,matieres:matObj,diffs:[],exercices:0,progression:0,inscritPar:"auto"});
+    saveDB();
+  } else if(S.regRole==="secretaire"){
+    const code=(document.getElementById("reg-code")?.value||"").trim();
+    const etab=(document.getElementById("reg-etab")?.value||"").trim();
+    if(!etab){err.textContent="Veuillez saisir le nom de l'établissement.";err.style.display="block";return;}
+    if(code!=="ADMIN-2026"){err.textContent="Code administrateur invalide. Contactez l'inspection académique.";err.style.display="block";return;}
+    DB.users.push({id,nom,role:"secretaire",mdp,etablissement:etab});
+    saveDB();
+  } else {
+    const code=(document.getElementById("reg-code")?.value||"").trim();
+    if(code!=="BENIN-2026"){err.textContent="Code école invalide. Contactez l'administration.";err.style.display="block";return;}
+    if(!S.selNiveauxReg.length){err.textContent="Sélectionnez au moins une classe.";err.style.display="block";return;}
+    DB.users.push({id,nom,role:"prof",mdp,classes:S.selNiveauxReg});
+    saveDB();
+  }
+  ok.style.display="block";
+  setTimeout(()=>{
+    const newUser=DB.users.find(u=>u.id===id);
+    S.user=newUser;S.screen="app";S.tab=0;S.chatMsgs=[];S.aiSummary=null;
+    render();loadAiSummary();
+  },1400);
+}
+
+function doAddEleve(){
+  const nom=(document.getElementById("add-nom")?.value||"").trim();
+  const classe=document.getElementById("add-classe")?.value;
+  const id=(document.getElementById("add-id")?.value||"").trim();
+  const mdp=(document.getElementById("add-mdp")?.value||"").trim();
+  const err=document.getElementById("add-err");
+  const ok=document.getElementById("add-ok");
+  err.style.display="none";ok.style.display="none";
+  if(!nom||!id||!mdp||!classe){err.style.display="block";return;}
+  if(DB.users.find(u=>u.id===id)){err.textContent="Cette adresse e-mail est déjà utilisée.";err.style.display="block";return;}
+  const mats=getMatieres(classe);
+  const matObj={};
+  mats.forEach(m=>matObj[m]=0);
+  DB.users.push({id,nom,role:"eleve",classe,mdp,score:0,matieres:matObj,diffs:[],exercices:0,progression:0,inscritPar:"secretaire"});
+  saveDB();
+  ok.style.display="block";
+  document.getElementById("add-nom").value="";
+  document.getElementById("add-id").value="";
+  document.getElementById("add-mdp").value="";
+  setTimeout(()=>{if(document.getElementById("add-ok"))document.getElementById("add-ok").style.display="none";},3000);
+}
+
+function doAddMatiere(){
+  const niv=document.getElementById("cm-classe")?.value;
+  const nom=(document.getElementById("cm-nom")?.value||"").trim();
+  if(!nom) return;
+  if(!DB.matieresCustom[niv]) DB.matieresCustom[niv]=[];
+  if(!DB.matieresCustom[niv].includes(nom)&&!getMatieresByNiveau(niv).includes(nom)){
+    DB.matieresCustom[niv].push(nom);
+  }
+  document.getElementById("cm-ok").style.display="block";
+  document.getElementById("cm-nom").value="";
+  setTimeout(()=>{if(document.getElementById("cm-ok"))document.getElementById("cm-ok").style.display="none";},2000);
+  render();
+}
+
+function doShare(){
+  const titre=(document.getElementById("sh-titre")?.value||"").trim();
+  const matiere=document.getElementById("sh-matiere")?.value||"";
+  const classe=document.getElementById("sh-classe")?.value||"";
+  const dest=document.getElementById("sh-dest")?.value||"Toute la classe";
+  const content=document.getElementById("sh-content")?.value||"";
+  if(!titre) return;
+  const niveauBase = getNiveauBase(classe);
+  const pdfInput=document.getElementById("sh-pdf");
+  const pdfFile=pdfInput?.files?.[0]||null;
+  const profClasses = S.user.classes||[];
+  const isMaClasse = profClasses.includes(classe);
+  if(pdfFile){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      DB.contenus.unshift({id:newId("c"),titre,matiere,classe,niveauBase,dest,date:"Aujourd'hui",auteur:S.user.nom,auteurClasses:profClasses,contenu:content,pdf:{name:pdfFile.name,url:e.target.result},forAutreClasse:!isMaClasse});
+      S.partageSuccess=true;
+      saveDB();render();
+    };
+    reader.readAsDataURL(pdfFile);
+  } else {
+    DB.contenus.unshift({id:newId("c"),titre,matiere,classe,niveauBase,dest,date:"Aujourd'hui",auteur:S.user.nom,auteurClasses:profClasses,contenu:content,pdf:null,forAutreClasse:!isMaClasse});
+    S.partageSuccess=true;
+    saveDB();render();
+  }
+}
+
+function doAddProf(){
+  const nom=(document.getElementById("addprof-nom")?.value||"").trim();
+  const id=(document.getElementById("addprof-id")?.value||"").trim();
+  const mdp=(document.getElementById("addprof-mdp")?.value||"").trim();
+  const classes=[...document.querySelectorAll(".addprof-class:checked")].map(c=>c.value);
+  const err=document.getElementById("addprof-err");
+  const ok=document.getElementById("addprof-ok");
+  err.style.display="none";ok.style.display="none";
+  if(!nom||!id||!mdp||!classes.length){err.textContent="Remplissez tous les champs et sélectionnez au moins une classe.";err.style.display="block";return;}
+  if(DB.users.find(u=>u.id===id)){err.textContent="Cet e-mail est déjà utilisé.";err.style.display="block";return;}
+  DB.users.push({id,nom,role:"prof",mdp,classes});
+  saveDB();
+  ok.style.display="block";
+  document.getElementById("addprof-nom").value="";
+  document.getElementById("addprof-id").value="";
+  document.getElementById("addprof-mdp").value="";
+  document.querySelectorAll(".addprof-class:checked").forEach(c=>c.checked=false);
+  setTimeout(()=>{if(document.getElementById("addprof-ok"))document.getElementById("addprof-ok").style.display="none";},3000);
+  render();
+}
+
+function doAddAnnale(){
+  const u = S.user;
+  const niveauActif = S.annalesNiveau || "3ème";
+  const matieres = getMatieresByNiveau(niveauActif);
+  const matActif = S.annalesMat || matieres[0];
+  const titre=(document.getElementById("ann-titre")?.value||"").trim();
+  const annee=(document.getElementById("ann-annee")?.value||"").trim();
+  const type=document.getElementById("ann-type")?.value||"BEPC";
+  const desc=(document.getElementById("ann-desc")?.value||"").trim();
+  const pdfInput=document.getElementById("ann-pdf");
+  const pdfFile=pdfInput?.files?.[0]||null;
+  if(!titre||!annee){
+    const ok=document.getElementById("ann-ok");
+    if(ok){ok.style.background="var(--red-lt)";ok.style.color="var(--red)";ok.textContent="Titre et année obligatoires.";ok.style.display="block";}
+    return;
+  }
+  const addAnn=(fichier)=>{
+    if(!DB.annales) DB.annales={};
+    if(!DB.annales[niveauActif]) DB.annales[niveauActif]={};
+    if(!DB.annales[niveauActif][matActif]) DB.annales[niveauActif][matActif]=[];
+    DB.annales[niveauActif][matActif].unshift({id:newId("ann"),titre,annee,type,description:desc,fichier});
+    saveDB();
+    const ok=document.getElementById("ann-ok");
+    if(ok){ok.style.background="";ok.style.color="var(--green)";ok.textContent="Annale ajoutée avec succès !";ok.style.display="block";}
+    if(document.getElementById("ann-titre")) document.getElementById("ann-titre").value="";
+    if(document.getElementById("ann-annee")) document.getElementById("ann-annee").value="";
+    if(document.getElementById("ann-desc")) document.getElementById("ann-desc").value="";
+    setTimeout(()=>{render();},300);
+  };
+  if(pdfFile){
+    const reader=new FileReader();
+    reader.onload=e=>addAnn({name:pdfFile.name,url:e.target.result});
+    reader.readAsDataURL(pdfFile);
+  } else {
+    addAnn(null);
+  }
+}
+
+
+function doSendMsg(){
+  const u=S.user;
+  const destSel=document.getElementById("msg-dest-id");
+  const destId=destSel?.value||"";
+  const destNom=destSel?.options[destSel.selectedIndex]?.dataset?.nom||"";
+  const sujet=(document.getElementById("msg-sujet")?.value||"").trim();
+  const corps=(document.getElementById("msg-corps")?.value||"").trim();
+  const ok=document.getElementById("msg-ok");
+  if(!destId||!sujet||!corps){
+    if(ok){ok.style.background="var(--red-lt)";ok.style.color="var(--red)";ok.textContent="Remplissez tous les champs obligatoires.";ok.style.display="block";}
+    return;
+  }
+  if(!DB.messages) DB.messages=[];
+  const now=new Date();
+  const dateStr=now.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})+" "+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+  DB.messages.unshift({id:newId("msg"),de:u.id,deNom:u.nom,a:destId,aNom:destNom,sujet,corps,date:dateStr,lu:false});
+  saveDB();
+  if(ok){ok.style.background="";ok.style.color="var(--green)";ok.textContent="Message envoyé avec succès !";ok.style.display="block";}
+  document.getElementById("msg-sujet").value="";
+  document.getElementById("msg-corps").value="";
+  destSel.value="";
+  setTimeout(()=>{if(document.getElementById("msg-ok"))document.getElementById("msg-ok").style.display="none";},2500);
+}
+
+async function doAiMsgSuggest(){
+  const u=S.user;
+  const destSel=document.getElementById("msg-dest-id");
+  const destId=destSel?.value||"";
+  if(!destId){alert("Sélectionnez d'abord un élève.");return;}
+  const eleve=DB.users.find(e=>e.id===destId);
+  if(!eleve) return;
+  const avg=Object.values(eleve.matieres||{}).reduce((a,b)=>a+b,0)/Math.max(Object.keys(eleve.matieres||{}).length,1);
+  const sujetEl=document.getElementById("msg-sujet");
+  const corpsEl=document.getElementById("msg-corps");
+  if(sujetEl) sujetEl.value="Génération en cours…";
+  if(corpsEl) corpsEl.value="";
+  try{
+    const res=await callIA(
+      "Tu es un professeur bienveillant sur EduBénin IA. Génère un message court (4-6 phrases), personnalisé et encourageant, du professeur vers l'élève. Réponds UNIQUEMENT avec un JSON : {\"sujet\":\"...\",\"corps\":\"...\"}. Pas de balise markdown.",
+      `Professeur : ${u.nom}. Élève : ${eleve.nom}, classe ${eleve.classe}, moyenne ${Math.round(avg)}%. Difficultés : ${(eleve.diffs||[]).join(", ")||"aucune"}. Progression : ${eleve.progression>=0?"+":""}${eleve.progression||0}%.`
+    );
+    if(res){
+      try{
+        const j=JSON.parse(res.replace(/```json|```/g,"").trim());
+        if(sujetEl&&j.sujet) sujetEl.value=j.sujet;
+        if(corpsEl&&j.corps) corpsEl.value=j.corps;
+      } catch(e){if(sujetEl)sujetEl.value="Message de suivi pédagogique";}
+    }
+  } catch(e){if(sujetEl)sujetEl.value="Message de suivi pédagogique";}
+}
+
+async function generateCoursAdaptatif(){
+  const u = S.user;
+  if(!S.selCoursMatiere) return;
+  S.coursLoading = true;
+  S.coursContenu = null;
+  render();
+  const score = u.matieres?.[S.selCoursMatiere]||0;
+  const niveau = score<40?"débutant (niveau fondamental, notions de base)":score<65?"intermédiaire (consolidation et application)":"avancé (approfondissement et maîtrise)";
+  const diffs = (u.diffs||[]).join(", ")||"aucune difficulté particulière";
+  try{
+    const res = await callIA(
+      `Tu es un professeur expert sur EduBénin IA, plateforme éducative béninoise (CP→Terminale). Tu génères des fiches de cours COMPLÈTES et ADAPTÉES au profil de chaque élève. Réponds UNIQUEMENT en JSON valide, sans texte avant ou après, sans balises markdown. Format exact :
+{"titre":"Titre clair de la leçon","resume":"Résumé introductif en 2-3 phrases (simple pour débutant, dense pour avancé)","alerteDiff":["point faible 1","point faible 2"],"sections":[{"titre":"Titre de la section","corps":"Contenu détaillé, clair, structuré avec des exemples. Utilise des retours à la ligne pour aérer."},{"titre":"...","corps":"..."}],"pointsCles":["Point clé 1","Point clé 2","Point clé 3"],"revisionCiblee":"Explication et exercice type ciblé sur les difficultés détectées de l'élève (2-4 phrases)","exempleQuotidien":"2-3 exemples concrets tirés de la vie quotidienne béninoise (marché de Cotonou, agriculture, vie scolaire, etc.)"}
+Règles : - sections : 3 à 4 sections selon la complexité - adapte le vocabulaire et la profondeur au niveau de l'élève - les exemples béninois doivent être authentiques et pertinents - alerteDiff : liste uniquement les notions en lien avec les difficultés réelles détectées (max 3)`,
+      `Génère une fiche de cours de ${S.selCoursMatiere} pour ${u.nom}, élève de ${u.classe}. Niveau actuel : ${score}% (profil : ${niveau}). Difficultés détectées : ${diffs}. La fiche doit être calibrée exactement pour ce profil.`
+    );
+    if(res){
+      try{
+        const clean = res.replace(/```json|```/g,"").trim();
+        const parsed = JSON.parse(clean);
+        if(parsed.titre||parsed.sections) S.coursContenu = parsed;
+        else S.coursContenu = null;
+      } catch(e){ S.coursContenu = null; }
+    }
+  } catch(e){ S.coursContenu = null; }
+  S.coursLoading = false;
+  render();
+}
+
+async function loadAiSummary(){
+  S.aiSummaryLoading=true;
+  const u=S.user;
+  let sys,prompt;
+  if(u.role==="eleve"){
+    const vals=Object.values(u.matieres||{});
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    sys="Tu es un assistant pédagogique bienveillant pour EduBénin IA, la plateforme éducative béninoise. Tu analyses les performances des élèves et donnes des conseils encourageants. Réponds toujours en français, de façon chaleureuse et motivante. Sois concis (3-4 phrases max).";
+    prompt=`L'élève ${u.nom} (classe de ${u.classe}) a un score moyen de ${avg}%. Ses matières : ${Object.entries(u.matieres||{}).map(([m,s])=>`${m}: ${s}%`).join(", ")}. Difficultés détectées : ${(u.diffs||[]).join(", ")||"aucune"}. Progression cette semaine : ${u.progression>0?"+":""}${u.progression||0}%. Fais une analyse courte et encourageante avec 1-2 recommandations concrètes.`;
+  } else if(u.role==="prof"){
+    const mesEleves=DB.users.filter(e=>e.role==="eleve"&&(u.classes||[]).includes(e.classe));
+    const allDiffs=mesEleves.flatMap(e=>e.diffs||[]);
+    const freq={};allDiffs.forEach(d=>{freq[d]=(freq[d]||0)+1;});
+    const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([d,n])=>`${d} (${n} élèves)`).join(", ");
+    sys="Tu es un assistant pédagogique pour les professeurs de EduBénin IA. Tu analyses les données de classe et fournis des recommandations concrètes. Réponds en français, de façon professionnelle et concise (3-4 phrases).";
+    prompt=`Le professeur ${u.nom} enseigne dans les classes ${(u.classes||[]).join(", ")}. Il a ${mesEleves.length} élèves au total. Difficultés les plus fréquentes : ${top||"aucune particulière"}. Fais un résumé pédagogique avec 2 recommandations pour la semaine.`;
+  } else return;
+  try{
+    const res=await callIA(sys,prompt);
+    S.aiSummary=res||`<i class="ti ti-sparkles" aria-hidden="true"></i> Analyse IA disponible avec la clé API configurée.`;
+  } catch(e){
+    S.aiSummary=`<i class="ti ti-sparkles" aria-hidden="true"></i> Analyse IA disponible avec la clé API configurée.`;
+  }
+  S.aiSummaryLoading=false;
+  const boxId=u.role==="prof"?"ai-prof-box":"ai-dash-box";
+  const box=document.getElementById(boxId);
+  if(box) box.innerHTML=`<div class="ai-box">${S.aiSummary}</div>`;
+}
+
+async function loadAiExercice(){
+  S.aiExLoading=true;
+  const u=S.user;
+  const exos=DB.exercices.filter(e=>e.classe===u.classe&&(S.selMatiere?e.matiere===S.selMatiere:true));
+  if(!exos.length) return;
+  const ex=exos[S.exIdx%exos.length];
+  const correct=S.chosenAns===ex.correct;
+
+  // Determine student's adaptive level for this subject
+  const scoreMatiere = u.matieres?.[S.selMatiere||ex.matiere]||0;
+  const niveau = scoreMatiere < 40 ? "débutant (besoins fondamentaux)" : scoreMatiere < 65 ? "intermédiaire (consolidation)" : "avancé (approfondissement)";
+
+  try{
+    const res=await callIA(
+      `Tu es un tuteur pédagogique adaptatif pour EduBénin IA. Tu guides les élèves béninois de ${u.classe}. Sois encourageant, précis et concis (2-3 phrases). Réponds en français.`,
+      `L'élève ${u.nom} vient de ${correct?"réussir":"rater"} un exercice sur "${ex.titre}" en ${ex.matiere}. Son niveau actuel en ${ex.matiere} : ${scoreMatiere}% (profil : ${niveau}). Difficultés connues : ${(u.diffs||[]).join(", ")||"aucune"}. ${correct?"Félicite-le et propose-lui un défi légèrement plus difficile adapté à son niveau.":"Explique-lui l'erreur de façon simple et propose-lui une notion à retravailler en priorité selon son niveau."}`,
+    );
+    S.aiExercice=res||"Recommandation IA disponible avec la clé API configurée.";
+  } catch(e){
+    S.aiExercice="Recommandation IA disponible avec la clé API configurée.";
+  }
+  S.aiExLoading=false;
+  const box=document.getElementById("ai-ex-box");
+  if(box) box.innerHTML=`<div class="ai-box">${S.aiExercice}</div>`;
+}
+
+async function sendChat(){
+  const inp=document.getElementById("chat-inp");
+  const msg=inp?.value.trim();
+  if(!msg||S.chatLoading) return;
+  inp.value="";
+  S.chatMsgs.push({role:"user",content:msg});
+  S.chatLoading=true;
+  render();
+  const u=S.user;
+  const isPrimaire=PRIMAIRE.includes(u.classe);
+  try{
+    const res=await callIA(
+      `Tu es un assistant pédagogique bienveillant pour EduBénin IA, plateforme éducative béninoise. Tu aides les élèves de ${u.classe}. ${isPrimaire?"Cet élève est en primaire. Utilise des mots très simples, des phrases courtes, beaucoup d'encouragements et des exemples de la vie quotidienne.":"Réponds en français, de façon claire et adaptée au niveau "+u.classe+"."} Sois concis et donne des exemples concrets. Les difficultés de l'élève : ${(u.diffs||[]).join(", ")||"aucune particulière"}.`,
+      msg
+    );
+    S.chatMsgs.push({role:"ai",content:res||"Je suis là pour t'aider ! Peux-tu reformuler ta question ?"});
+  } catch(e){
+    S.chatMsgs.push({role:"ai",content:"Désolé, une erreur s'est produite. Réessaie dans un instant."});
+  }
+  S.chatLoading=false;
+  render();
+  const msgs=document.getElementById("chat-messages");
+  if(msgs) msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function generateContenuIA(){
+  const mat=document.getElementById("sh-matiere")?.value||"";
+  const classe=document.getElementById("sh-classe")?.value||"";
+  const titre=document.getElementById("sh-titre");
+  if(titre) titre.value="Génération en cours…";
+  try{
+    const res=await callIA(
+      "Tu es un assistant pour professeurs sur EduBénin IA. Génère un titre court (max 8 mots) pour un contenu pédagogique. Réponds UNIQUEMENT avec le titre, rien d'autre.",
+      `Génère un titre de contenu pédagogique en ${mat} pour une classe de ${classe}.`
+    );
+    if(titre) titre.value=(res||`Exercices ${mat} — ${classe}`).replace(/["\n]/g,"").trim();
+  } catch(e){
+    if(titre) titre.value=`Exercices ${mat} — ${classe}`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
